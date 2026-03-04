@@ -5,8 +5,11 @@ import mammoth
 import platform
 
 if platform.system() == "Windows":
+    import platform
+
+if platform.system() == "Windows":
     import comtypes.client
-import pythoncom
+    import pythoncom
 
 
 # ===============================
