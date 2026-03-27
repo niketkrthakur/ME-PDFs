@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="fw-bold mb-4">Upload PDFs</h2>
+
+    <div class="glass-card">
+
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+
+            <!-- Drag Drop Area -->
+            <div id="dropZone" class="drop-zone text-center p-5">
+                <p class="mb-2 fw-semibold">Drag & Drop your PDFs here</p>
+                <p class="text-muted">or click to browse</p>
+                <input type="file" id="fileInput" name="pdf_files"
+                       accept=".pdf" multiple hidden required>
+            </div>
+
+            <!-- Preview Panel -->
+            <div id="previewPanel" class="mt-4"></div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Convert Selected PDFs
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const previewPanel = document.getElementById("previewPanel");
+
+let selectedFiles = [];
+
+dropZone.addEventListener("click", () => fileInput.click());
+
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("dragover");
+});
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+    handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener("change", () => {
+    handleFiles(fileInput.files);
+});
+
+function handleFiles(files) {
+    for (let file of files) {
+        if (file.type === "application/pdf") {
+            selectedFiles.push(file);
+        }
+    }
+    updatePreview();
+}
+
+function updatePreview() {
+    previewPanel.innerHTML = "";
+
+    selectedFiles.forEach((file, index) => {
+        const fileCard = document.createElement("div");
+        fileCard.className = "preview-card d-flex justify-content-between align-items-center p-3 mb-2";
+
+        fileCard.innerHTML = `
+            <div>
+                <strong>${file.name}</strong><br>
+                <small>${(file.size / 1024).toFixed(1)} KB</small>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger"
+                onclick="removeFile(${index})">Remove</button>
+        `;
+
+        previewPanel.appendChild(fileCard);
+    });
+
+    // Update actual input
+    const dataTransfer = new DataTransfer();
+    selectedFiles.forEach(file => dataTransfer.items.add(file));
+    fileInput.files = dataTransfer.files;
+}
+
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updatePreview();
+}
+</script>
+
+{% endblock %}

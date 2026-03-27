@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">Download Images</h2>
+
+<div class="glass-card">
+
+    <div class="row">
+
+        {% for file in files %}
+        <div class="col-md-3 mb-4 text-center">
+
+            <img src="{{ url_for('static', filename='converted/' + file) }}"
+                 class="img-fluid mb-2">
+
+            <a href="{{ url_for('download_file', filename=file) }}"
+               class="btn btn-sm btn-primary">
+                Download
+            </a>
+
+        </div>
+        {% endfor %}
+
+    <form method="POST" action="/download-all">
+        <input type="hidden" name="files" value="{{ files|join(',') }}">
+        <button class="btn btn-success mt-3">
+            Download All as ZIP
+        </button>
+    </form>    
+
+    </div>
+
+    <a href="/pdf-to-jpg" class="btn btn-outline-dark mt-3">
+        Convert Another
+    </a>
+
+</div>
+
+{% endblock %}

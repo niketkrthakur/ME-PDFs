@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="glass-card">
+
+    <h2 class="fw-bold mb-4"><i class="bi bi-envelope"></i> Contact Messages</h2>
+
+    {% for msg in messages %}
+    <div class="preview-card p-3 mb-3">
+
+        <div class="d-flex justify-content-between">
+            <strong>{{ msg.name }}</strong>
+            <small class="text-muted">{{ msg.time }}</small>
+        </div>
+
+        <div class="mb-2">
+            <small class="text-muted">{{ msg.email }}</small>
+        </div>
+
+        <p>{{ msg.message }}</p>
+
+        <!-- Reply Button -->
+        <button class="btn btn-sm btn-danger"
+                onclick="openReply('{{ msg.email }}')">
+            Reply
+        </button>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- Reply Modal -->
+<div id="replyBox" style="display:none; position:fixed; top:20%; right:20%; width:400px; background:white; padding:20px; border-radius:10px; z-index:9999;">
+    <h5>Reply</h5>
+
+    <form method="POST" action="/reply-message">
+        <input type="hidden" name="email" id="replyEmail">
+
+        <textarea name="reply" class="form-control mb-3" placeholder="Type reply..." required></textarea>
+
+        <button class="btn btn-danger">Send Reply</button>
+    </form>
+</div>
+
+<script>
+function openReply(email) {
+    document.getElementById("replyBox").style.display = "block";
+    document.getElementById("replyEmail").value = email;
+}
+</script>
+
+{% endblock %}

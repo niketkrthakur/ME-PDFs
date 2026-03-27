@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">PDF to JPG</h2>
+
+<div class="glass-card">
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="file"
+               name="file"
+               id="pdfFile"
+               accept=".pdf"
+               required
+               class="form-control mb-3">
+
+        <div id="previewGrid" class="row mb-3"></div>
+
+        <input type="hidden" name="selected_pages" id="selectedPages">
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label>DPI</label>
+                <select name="dpi" class="form-select">
+                    <option value="150">150</option>
+                    <option value="300">300</option>
+                    <option value="600">600</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>JPG Quality</label>
+                <select name="quality" class="form-select">
+                    <option value="70">70</option>
+                    <option value="85" selected>85</option>
+                    <option value="95">95</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <input type="checkbox" name="grayscale"> Convert to Grayscale
+        </div>
+
+        <div class="mb-3">
+            <input type="text" name="watermark"
+                   placeholder="Watermark text (optional)"
+                   class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Convert
+        </button>
+
+    </form>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+const pdfInput = document.getElementById("pdfFile");
+const previewGrid = document.getElementById("previewGrid");
+const selectedPagesInput = document.getElementById("selectedPages");
+
+let selectedPages = [];
+let isDragging = false;
+
+pdfInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function() {
+        const typedarray = new Uint8Array(this.result);
+
+        pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+
+            previewGrid.innerHTML = "";
+            selectedPages = [];
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+
+                pdf.getPage(i).then(page => {
+
+                    const scale = 0.3;
+                    const viewport = page.getViewport({ scale });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+
+                    const col = document.createElement("div");
+                    col.className = "col-md-2 mb-3 text-center";
+                    col.style.cursor = "pointer";
+                    col.dataset.index = i-1;
+
+                    col.appendChild(canvas);
+
+                    col.onmousedown = () => isDragging = true;
+                    col.onmouseup = () => isDragging = false;
+
+                    col.onmouseover = function() {
+                        if (isDragging) toggleSelect(col);
+                    };
+
+                    col.onclick = function() {
+                        toggleSelect(col);
+                    };
+
+                    previewGrid.appendChild(col);
+                });
+            }
+        });
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+function toggleSelect(element) {
+    const index = parseInt(element.dataset.index);
+
+    if (selectedPages.includes(index)) {
+        selectedPages = selectedPages.filter(p => p !== index);
+        element.style.border = "";
+    } else {
+        selectedPages.push(index);
+        element.style.border = "3px solid #e63946";
+    }
+
+    selectedPagesInput.value = selectedPages.join(",");
+}
+</script>
+
+{% endblock %}

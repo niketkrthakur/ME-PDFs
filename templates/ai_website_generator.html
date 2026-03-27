@@ -1,0 +1,355 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container py-5">
+  <!-- Hero Section -->
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-danger mb-3">
+      <i class="bi bi-globe"></i> AI Website → PDF/PPT Generator</span>
+    </h1>
+    <p class="lead text-muted">Transform any website into professional PDF reports or PowerPoint presentations in seconds</p>
+  </div>
+
+  <!-- Main Card -->
+  <div class="glass-card mx-auto animate-slide-up" style="max-width:700px;">
+    
+    <!-- Feature Tags -->
+    <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+      <span class="badge bg-danger bg-opacity-10 text-danger p-3">
+        <i class="bi bi-bolt"></i> AI-Powered Analysis
+      </span>
+      <span class="badge bg-danger bg-opacity-10 text-danger p-3">
+        <i class="bi bi-bar-chart"></i> Smart Formatting
+      </span>
+      <span class="badge bg-danger bg-opacity-10 text-danger p-3">
+        <i class="bi bi-shield-lock"></i> Secure Processing
+      </span>
+    </div>
+
+    <form method="POST" id="generateForm" class="px-3">
+      
+      <!-- URL Input with Icon -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-link-45deg"></i> Website URL
+        </label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-0">
+            <i class="bi bi-globe text-danger"></i>
+          </span>
+          <input type="url" 
+                 name="url" 
+                 class="form-control form-control-lg border-0 bg-light" 
+                 placeholder="https://example.com" 
+                 required
+                 pattern="https?://.+"
+                 title="Please enter a valid URL starting with http:// or https://">
+        </div>
+        <div class="form-text">
+          <i class="bi bi-info-circle"></i> Enter the complete website URL including http:// or https://
+        </div>
+      </div>
+
+      <!-- Output Type Selection with Cards -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-file-earmark"></i> Output Type
+        </label>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <input type="radio" class="btn-check" name="output_type" id="pdfOption" value="pdf" checked>
+            <label class="btn btn-outline-danger w-100 p-3" for="pdfOption">
+              <i class="bi bi-file-pdf fs-4 d-block mb-2"></i>
+              <span class="fw-bold">PDF Report</span>
+              <small class="d-block text-muted">Clean, printable document</small>
+            </label>
+          </div>
+          <div class="col-md-6">
+            <input type="radio" class="btn-check" name="output_type" id="pptOption" value="ppt">
+            <label class="btn btn-outline-danger w-100 p-3" for="pptOption">
+              <i class="bi bi-file-ppt fs-4 d-block mb-2"></i>
+              <span class="fw-bold">PowerPoint</span>
+              <small class="d-block text-muted">Editable presentation</small>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Options (Expandable) -->
+      <div class="mb-4">
+        <button class="btn btn-link text-decoration-none text-danger p-0" type="button" data-bs-toggle="collapse" data-bs-target="#advancedOptions">
+          <i class="bi bi-gear"></i> Advanced Options <i class="bi bi-chevron-down small"></i>
+        </button>
+        
+        <div class="collapse mt-3" id="advancedOptions">
+          <div class="card card-body bg-light border-0">
+            <div class="mb-3">
+              <label class="form-label">Content Depth</label>
+              <select name="depth" class="form-select">
+                <option value="basic">Basic (Main content only)</option>
+                <option value="standard" selected>Standard (Recommended)</option>
+                <option value="deep">Deep (All pages linked)</option>
+              </select>
+            </div>
+            
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" name="include_images" id="includeImages" checked>
+              <label class="form-check-label" for="includeImages">
+                Include images
+              </label>
+            </div>
+            
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" name="preserve_formatting" id="preserveFormatting" checked>
+              <label class="form-check-label" for="preserveFormatting">
+                Preserve formatting
+              </label>
+            </div>
+            
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="include_metadata" id="includeMetadata">
+              <label class="form-check-label" for="includeMetadata">
+                Include page metadata
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Button with Loading State -->
+      <div class="d-grid gap-3">
+        <button type="submit" class="btn btn-danger btn-lg position-relative" id="generateBtn">
+          <span class="normal-state">
+            <i class="bi bi-magic"></i> Generate
+          </span>
+          <span class="loading-state d-none">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Processing...
+          </span>
+        </button>
+        
+        <!-- Sample URLs -->
+        <div class="text-center small text-muted">
+          Try: 
+          <button type="button" class="btn btn-link text-decoration-none p-0 mx-1 sample-url" data-url="https://en.wikipedia.org/wiki/Artificial_intelligence">
+            Wikipedia AI
+          </button>
+          •
+          <button type="button" class="btn btn-link text-decoration-none p-0 mx-1 sample-url" data-url="https://www.nature.com">
+            Nature
+          </button>
+          •
+          <button type="button" class="btn btn-link text-decoration-none p-0 mx-1 sample-url" data-url="https://news.ycombinator.com">
+            Hacker News
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Features Grid -->
+  <div class="row mt-5 g-4">
+    <div class="col-md-4">
+      <div class="feature-card text-center p-4">
+        <div class="feature-icon mb-3">
+          <i class="bi bi-lightning-charge text-danger fs-1"></i>
+        </div>
+        <h5>Lightning Fast</h5>
+        <p class="text-muted small">Generate professional documents in under 30 seconds</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card text-center p-4">
+        <div class="feature-icon mb-3">
+          <i class="bi bi-layout-text-window text-danger fs-1"></i>
+        </div>
+        <h5>Smart Layout</h5>
+        <p class="text-muted small">AI-powered content extraction and formatting</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card text-center p-4">
+        <div class="feature-icon mb-3">
+          <i class="bi bi-cloud-check text-danger fs-1"></i>
+        </div>
+        <h5>Cloud Processing</h5>
+        <p class="text-muted small">No installation required, works in your browser</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Generations (Optional) -->
+  <div class="mt-5">
+    <h5 class="text-center mb-3 text-muted">Recently Generated</h5>
+    <div class="row g-3" id="recentGenerations">
+      <!-- This would be populated dynamically -->
+      <div class="col-12 text-center text-muted small">
+        <i class="bi bi-clock-history"></i> Your recent generations will appear here
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add this CSS to your layout or as a style block -->
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    transition: transform 0.3s ease;
+  }
+  
+  .glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(220, 53, 69, 0.15);
+  }
+  
+  .glow-text {
+    text-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .feature-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(220, 53, 69, 0.1);
+  }
+  
+  .btn-check:checked + .btn-outline-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+    color: white;
+    border-color: #dc3545;
+  }
+  
+  .btn-check:checked + .btn-outline-danger small {
+    color: rgba(255,255,255,0.8) !important;
+  }
+  
+  .input-group-text {
+    border-radius: 10px 0 0 10px;
+  }
+  
+  .form-control {
+    border-radius: 0 10px 10px 0;
+  }
+  
+  .form-control:focus {
+    box-shadow: none;
+    border-color: #dc3545;
+  }
+  
+  .btn-outline-danger {
+    border: 2px solid rgba(220, 53, 69, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-outline-danger:hover {
+    border-color: #dc3545;
+    transform: scale(1.02);
+  }
+</style>
+
+<!-- JavaScript for interactivity -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('generateForm');
+    const generateBtn = document.getElementById('generateBtn');
+    const normalState = generateBtn.querySelector('.normal-state');
+    const loadingState = generateBtn.querySelector('.loading-state');
+    
+    // Handle form submission with loading state
+    form.addEventListener('submit', function(e) {
+      const urlInput = document.querySelector('input[name="url"]');
+      
+      // Validate URL
+      try {
+        new URL(urlInput.value);
+      } catch {
+        e.preventDefault();
+        alert('Please enter a valid URL');
+        return;
+      }
+      
+      // Show loading state
+      normalState.classList.add('d-none');
+      loadingState.classList.remove('d-none');
+      generateBtn.disabled = true;
+    });
+    
+    // Sample URL buttons
+    document.querySelectorAll('.sample-url').forEach(button => {
+      button.addEventListener('click', function() {
+        const url = this.dataset.url;
+        document.querySelector('input[name="url"]').value = url;
+      });
+    });
+    
+    // Load recent generations from localStorage
+    loadRecentGenerations();
+  });
+  
+  function loadRecentGenerations() {
+    const recent = localStorage.getItem('recentGenerations');
+    if (recent) {
+      const generations = JSON.parse(recent);
+      const container = document.getElementById('recentGenerations');
+      
+      if (generations.length > 0) {
+        container.innerHTML = generations.slice(0, 3).map(gen => `
+          <div class="col-md-4">
+            <div class="card border-0 bg-light">
+              <div class="card-body p-3">
+                <small class="text-muted">${gen.type}</small>
+                <div class="fw-bold truncate">${gen.url}</div>
+                <small class="text-muted">${gen.time}</small>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+  }
+  
+  // Save generation to history (call this after successful generation)
+  function saveToHistory(url, type) {
+    let recent = localStorage.getItem('recentGenerations');
+    recent = recent ? JSON.parse(recent) : [];
+    
+    recent.unshift({
+      url: url,
+      type: type === 'pdf' ? 'PDF Report' : 'PowerPoint',
+      time: new Date().toLocaleTimeString()
+    });
+    
+    // Keep only last 5
+    recent = recent.slice(0, 5);
+    localStorage.setItem('recentGenerations', JSON.stringify(recent));
+    loadRecentGenerations();
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">HTML to PDF</h2>
+
+<div class="glass-card">
+
+    <p class="text-muted mb-4">
+        Convert a webpage URL or custom HTML code into a PDF document.
+    </p>
+
+    <!-- URL Conversion -->
+    <form method="POST" class="mb-4">
+
+        <label class="fw-semibold mb-2">Enter Website URL</label>
+        <input type="url"
+               name="url"
+               placeholder="https://example.com"
+               class="form-control mb-3"
+               required>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Convert URL to PDF
+        </button>
+
+    </form>
+
+    <hr>
+
+    <!-- Optional: Raw HTML conversion -->
+    <form method="POST">
+
+        <label class="fw-semibold mb-2 mt-3">
+            Or Paste Raw HTML Code
+        </label>
+
+        <textarea name="html_code"
+                  rows="6"
+                  class="form-control mb-3"
+                  placeholder="<h1>Hello World</h1>"></textarea>
+
+        <button type="submit"
+                class="btn btn-outline-dark">
+            Convert HTML Code
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

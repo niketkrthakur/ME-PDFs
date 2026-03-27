@@ -1,0 +1,558 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container py-4 py-md-5">
+  <!-- Hero Section -->
+  <div class="text-center mb-5">
+    <div class="animate-icon mb-3">
+      <i class="bi bi-file-earmark-text-fill text-danger" style="font-size: 3rem;"></i>
+    </div>
+    <h1 class="display-5 fw-bold mb-3">
+      <span class="gradient-text">Story & Article to PDF</span>
+    </h1>
+    <p class="lead text-muted">Transform your favorite stories, articles, and blog posts into beautiful PDF documents</p>
+  </div>
+
+  <!-- Main Card -->
+  <div class="glass-card mx-auto animate-slide-up" style="max-width: 750px;">
+    
+    <!-- Quick Stats Bar -->
+    <div class="row g-3 mb-4 pb-2 border-bottom">
+      <div class="col-4 text-center">
+        <div class="stats-badge">
+          <i class="bi bi-file-pdf text-danger"></i>
+          <div class="small mt-1">Clean PDF</div>
+        </div>
+      </div>
+      <div class="col-4 text-center">
+        <div class="stats-badge">
+          <i class="bi bi-layout-text-window text-danger"></i>
+          <div class="small mt-1">Smart Layout</div>
+        </div>
+      </div>
+      <div class="col-4 text-center">
+        <div class="stats-badge">
+          <i class="bi bi-bookmark-star text-danger"></i>
+          <div class="small mt-1">Save for Later</div>
+        </div>
+      </div>
+    </div>
+
+    <form method="POST" id="pdfForm" class="mt-3">
+      
+      <!-- URL Input with Enhanced UI -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold mb-2">
+          <i class="bi bi-link-45deg"></i> Story/Article Link
+        </label>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text bg-light border-0 rounded-start">
+            <i class="bi bi-globe2 text-danger"></i>
+          </span>
+          <input type="url" 
+                 name="url" 
+                 id="storyUrl"
+                 class="form-control bg-light border-0" 
+                 placeholder="https://inkitt.com/story/... or any article URL"
+                 required
+                 pattern="https?://.+"
+                 autocomplete="off">
+          <button type="button" id="pasteBtn" class="btn btn-outline-secondary border-0 bg-light" title="Paste from clipboard">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+        <div class="form-text mt-2">
+          <i class="bi bi-info-circle"></i> 
+          Supports: Inkitt, Wattpad, Medium, WordPress, news articles, and any text-rich website
+        </div>
+      </div>
+
+      <!-- Reading Options Accordion -->
+      <div class="mb-4">
+        <div class="card border-0 bg-light">
+          <div class="card-header bg-transparent border-0 p-3">
+            <button class="btn btn-link text-decoration-none text-dark p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#readingOptions">
+              <i class="bi bi-sliders2"></i> Reading Options
+              <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </div>
+          <div class="collapse" id="readingOptions">
+            <div class="card-body pt-0">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small">Paper Size</label>
+                  <select name="paper_size" class="form-select form-select-sm">
+                    <option value="A4">A4 (Standard)</option>
+                    <option value="Letter">Letter (US)</option>
+                    <option value="A5">A5 (Pocket size)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small">Font Size</label>
+                  <select name="font_size" class="form-select form-select-sm">
+                    <option value="small">Small</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="large">Large</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small">Theme</label>
+                  <select name="theme" class="form-select form-select-sm">
+                    <option value="light" selected>Light (Day mode)</option>
+                    <option value="dark">Dark (Night mode)</option>
+                    <option value="sepia">Sepia (Eye comfort)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small">Line Spacing</label>
+                  <select name="line_spacing" class="form-select form-select-sm">
+                    <option value="1">Compact</option>
+                    <option value="1.5" selected>Normal</option>
+                    <option value="2">Relaxed</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="include_metadata" id="includeMetadata" checked>
+                    <label class="form-check-label" for="includeMetadata">
+                      Include metadata (title, author, date)
+                    </label>
+                  </div>
+                  <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" name="preserve_images" id="preserveImages" checked>
+                    <label class="form-check-label" for="preserveImages">
+                      Include images from the article
+                    </label>
+                  </div>
+                  <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" name="add_page_numbers" id="addPageNumbers" checked>
+                    <label class="form-check-label" for="addPageNumbers">
+                      Add page numbers
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Actions -->
+      <div class="mb-4">
+        <div class="d-flex gap-2 justify-content-between align-items-center flex-wrap">
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-outline-secondary" id="clearUrlBtn">
+              <i class="bi bi-x-circle"></i> Clear
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="exampleUrlsBtn">
+              <i class="bi bi-star"></i> Examples
+            </button>
+          </div>
+          <div class="text-muted small">
+            <i class="bi bi-lock"></i> Private & secure
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Button with Loading State -->
+      <div class="d-grid gap-3">
+        <button type="submit" class="btn btn-danger btn-lg" id="generatePdfBtn">
+          <span class="normal-state">
+            <i class="bi bi-file-pdf"></i> Convert to PDF
+            <i class="bi bi-arrow-right-short"></i>
+          </span>
+          <span class="loading-state d-none">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Extracting content...
+          </span>
+        </button>
+        
+        <!-- Quick Tips -->
+        <div class="text-center small text-muted mt-2">
+          <i class="bi bi-lightbulb"></i> <strong>Pro tip:</strong> Paste any story link and get a clean, readable PDF in seconds
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Supported Platforms Section -->
+  <div class="row mt-5 g-3 justify-content-center">
+    <div class="col-12 text-center mb-3">
+      <h6 class="text-muted">Supported Platforms</h6>
+    </div>
+    <div class="col-auto">
+      <span class="platform-badge">
+        <i class="bi bi-book"></i> Inkitt
+      </span>
+    </div>
+    <div class="col-auto">
+      <span class="platform-badge">
+        <i class="bi bi-pencil-square"></i> Wattpad
+      </span>
+    </div>
+    <div class="col-auto">
+      <span class="platform-badge">
+        <i class="bi bi-medium"></i> Medium
+      </span>
+    </div>
+    <div class="col-auto">
+      <span class="platform-badge">
+        <i class="bi bi-wordpress"></i> WordPress
+      </span>
+    </div>
+    <div class="col-auto">
+      <span class="platform-badge">
+        <i class="bi bi-newspaper"></i> News Sites
+      </span>
+    </div>
+    <div class="col-auto">
+      <span class="platform-badge">
+        <i class="bi bi-blog"></i> Blogs
+      </span>
+    </div>
+  </div>
+
+  <!-- Recent Conversions Section -->
+  <div class="mt-5" id="recentConversions" style="display: none;">
+    <div class="card border-0 bg-transparent">
+      <div class="card-body text-center">
+        <h6 class="text-muted mb-3">
+          <i class="bi bi-clock-history"></i> Recent Conversions
+        </h6>
+        <div id="recentList" class="d-flex flex-column gap-2 align-items-center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(220, 53, 69, 0.08);
+    border: 1px solid rgba(220, 53, 69, 0.15);
+    transition: all 0.3s ease;
+  }
+  
+  .glass-card:hover {
+    box-shadow: 0 25px 45px rgba(220, 53, 69, 0.12);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-icon {
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  
+  .stats-badge {
+    background: rgba(220, 53, 69, 0.05);
+    padding: 8px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+  
+  .stats-badge:hover {
+    background: rgba(220, 53, 69, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .platform-badge {
+    background: rgba(220, 53, 69, 0.08);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #dc3545;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .platform-badge:hover {
+    background: rgba(220, 53, 69, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+  }
+  
+  .input-group-text {
+    background: #f8f9fa;
+  }
+  
+  .btn-outline-secondary:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+  }
+  
+  .card-header .btn-link {
+    font-weight: 500;
+  }
+  
+  .card-header .btn-link:hover {
+    color: #dc3545 !important;
+  }
+  
+  .form-switch .form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  /* Loading animation for button */
+  .btn-danger:disabled {
+    opacity: 0.8;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .glass-card {
+      padding: 1.5rem;
+    }
+    
+    .display-5 {
+      font-size: 1.8rem;
+    }
+  }
+  
+  /* Smooth transitions */
+  .btn, .form-control, .form-select, .platform-badge {
+    transition: all 0.2s ease;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('pdfForm');
+    const urlInput = document.getElementById('storyUrl');
+    const generateBtn = document.getElementById('generatePdfBtn');
+    const normalState = generateBtn.querySelector('.normal-state');
+    const loadingState = generateBtn.querySelector('.loading-state');
+    const clearBtn = document.getElementById('clearUrlBtn');
+    const pasteBtn = document.getElementById('pasteBtn');
+    const exampleUrlsBtn = document.getElementById('exampleUrlsBtn');
+    
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+      const url = urlInput.value.trim();
+      
+      // Validate URL
+      if (!url) {
+        e.preventDefault();
+        showToast('Please enter a story or article URL', 'warning');
+        return;
+      }
+      
+      try {
+        new URL(url);
+      } catch {
+        e.preventDefault();
+        showToast('Please enter a valid URL (include http:// or https://)', 'danger');
+        return;
+      }
+      
+      // Show loading state
+      normalState.classList.add('d-none');
+      loadingState.classList.remove('d-none');
+      generateBtn.disabled = true;
+      
+      // Save to history (simulate)
+      saveToHistory(url);
+    });
+    
+    // Clear URL button
+    clearBtn.addEventListener('click', function() {
+      urlInput.value = '';
+      urlInput.focus();
+    });
+    
+    // Paste from clipboard
+    pasteBtn.addEventListener('click', async function() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text && text.startsWith('http')) {
+          urlInput.value = text;
+          showToast('URL pasted successfully!', 'success');
+        } else if (text) {
+          urlInput.value = text;
+          showToast('Content pasted (ensure it\'s a valid URL)', 'info');
+        } else {
+          showToast('Clipboard is empty', 'warning');
+        }
+      } catch (err) {
+        showToast('Unable to access clipboard. Please paste manually (Ctrl+V)', 'info');
+      }
+    });
+    
+    // Example URLs dropdown/modal
+    let exampleModal;
+    if (exampleUrlsBtn) {
+      exampleUrlsBtn.addEventListener('click', function() {
+        const examples = [
+          { name: 'Inkitt Story', url: 'https://inkitt.com/stories/romance/123456' },
+          { name: 'Medium Article', url: 'https://medium.com/@username/article-title' },
+          { name: 'News Article', url: 'https://example.com/news/article' },
+          { name: 'Blog Post', url: 'https://example.com/blog/post' }
+        ];
+        
+        const exampleList = examples.map(ex => 
+          `<button class="dropdown-item" data-url="${ex.url}">
+            <i class="bi bi-link"></i> ${ex.name}
+          </button>`
+        ).join('');
+        
+        // Simple modal or alert for demo
+        const userChoice = prompt('Enter a sample URL to test:\n\n- Inkitt: https://inkitt.com/stories/...\n- Medium: https://medium.com/...\n- Any article URL');
+        if (userChoice && userChoice.startsWith('http')) {
+          urlInput.value = userChoice;
+          showToast('Example URL added!', 'success');
+        } else if (userChoice) {
+          showToast('Please enter a valid URL starting with http:// or https://', 'warning');
+        }
+      });
+    }
+    
+    // Auto-save recent conversions
+    function saveToHistory(url) {
+      let history = localStorage.getItem('storyPdfHistory');
+      history = history ? JSON.parse(history) : [];
+      
+      // Add new entry
+      history.unshift({
+        url: url,
+        timestamp: new Date().toLocaleString(),
+        date: new Date().toISOString()
+      });
+      
+      // Keep only last 5
+      history = history.slice(0, 5);
+      localStorage.setItem('storyPdfHistory', JSON.stringify(history));
+      
+      // Update display
+      displayRecentHistory();
+    }
+    
+    function displayRecentHistory() {
+      const history = localStorage.getItem('storyPdfHistory');
+      const container = document.getElementById('recentConversions');
+      const listContainer = document.getElementById('recentList');
+      
+      if (history && JSON.parse(history).length > 0) {
+        const items = JSON.parse(history);
+        container.style.display = 'block';
+        
+        listContainer.innerHTML = items.map((item, index) => `
+          <div class="recent-item d-flex justify-content-between align-items-center w-100" style="max-width: 400px;">
+            <div class="text-truncate flex-grow-1">
+              <i class="bi bi-file-pdf text-danger small"></i>
+              <small class="text-muted">${new Date(item.timestamp).toLocaleTimeString()}</small>
+              <span class="small ms-2 text-truncate d-inline-block" style="max-width: 200px;">${item.url}</span>
+            </div>
+            <button class="btn btn-sm btn-link text-danger reuse-url" data-url="${item.url}">
+              <i class="bi bi-arrow-repeat"></i> Reuse
+            </button>
+          </div>
+        `).join('');
+        
+        // Add event listeners to reuse buttons
+        document.querySelectorAll('.reuse-url').forEach(btn => {
+          btn.addEventListener('click', function() {
+            urlInput.value = this.dataset.url;
+            urlInput.scrollIntoView({ behavior: 'smooth' });
+            showToast('URL loaded from history!', 'success');
+          });
+        });
+      } else {
+        container.style.display = 'none';
+      }
+    }
+    
+    // Simple toast notification
+    function showToast(message, type = 'info') {
+      // Check if toast container exists, create if not
+      let toastContainer = document.querySelector('.toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+      }
+      
+      const toastId = 'toast-' + Date.now();
+      const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+          <div class="d-flex">
+            <div class="toast-body">
+              ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+          </div>
+        </div>
+      `;
+      
+      toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+      const toastElement = document.getElementById(toastId);
+      const toast = new bootstrap.Toast(toastElement);
+      toast.show();
+      
+      // Remove toast after it's hidden
+      toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+      });
+    }
+    
+    // Load recent history on page load
+    displayRecentHistory();
+    
+    // Add keyboard shortcut (Ctrl+V already handled by browser)
+    urlInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        form.dispatchEvent(new Event('submit'));
+      }
+    });
+    
+    // Auto-detect and validate URL as user types
+    urlInput.addEventListener('input', function() {
+      const value = this.value.trim();
+      if (value && !value.startsWith('http')) {
+        this.classList.add('is-invalid');
+      } else if (value && value.startsWith('http')) {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+      } else {
+        this.classList.remove('is-invalid', 'is-valid');
+      }
+    });
+  });
+</script>
+
+{% endblock %}

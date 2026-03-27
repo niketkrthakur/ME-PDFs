@@ -1,0 +1,303 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="glass-card">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+                <h1 class="fw-bold display-4">
+                    Convert, Edit &
+                    <span style="color:#e63946;">Export PDFs</span>
+                </h1>
+
+                <p class="text-muted mt-4 fs-5">
+                    Upload a PDF, edit it like a Word document,
+                    and download as .docx or .pdf — all in your browser.
+                </p>
+
+                <a href="/upload_page" class="btn btn-primary btn-lg mt-3">
+                    Get Started Free →
+                </a>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <img src="https://i.ibb.co/dY1f5CK/web-logo.png"
+                     class="img-fluid"
+                     style="max-height: 300px;">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row mt-5">
+
+    <!-- Merge -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-files"></i>
+            </div>
+            <h5 class="fw-bold">Merge PDF</h5>
+            <p class="text-muted">
+                Combine PDFs in the order you want.
+            </p>
+            <a href="/merge" class="btn btn-primary">
+                Merge PDFs
+            </a>
+        </div>
+    </div>
+
+    <!-- Split -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-scissors"></i>
+            </div>
+            <h5 class="fw-bold">Split PDF</h5>
+            <p class="text-muted">
+                Extract pages into separate PDF files.
+            </p>
+            <a href="/split" class="btn btn-primary">
+                Split PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Compress -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-file-zip"></i>
+            </div>
+            <h5 class="fw-bold">Compress PDF</h5>
+            <p class="text-muted">
+                Reduce file size while keeping quality.
+            </p>
+            <a href="/compress" class="btn btn-primary">
+                Compress PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Numbers -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-123"></i>
+            </div>
+            <h5 class="fw-bold">Page Numbers</h5>
+            <p class="text-muted">
+                Add custom page numbers to your PDF.
+            </p>
+            <a href="/add-page-numbers" class="btn btn-primary">
+                 Add Page Numbers
+            </a>
+        </div>
+    </div>
+
+    <!-- Sign -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-pen"></i>
+            </div>
+            <h5 class="fw-bold">Sign PDF</h5>
+            <p class="text-muted">
+                Draw your signature and place it on your PDF.
+            </p>
+            <a href="/sign-pdf" class="btn btn-primary">
+                 Sign PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Translate -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-translate"></i>
+            </div>
+            <h5 class="fw-bold">Translate PDF</h5>
+            <p class="text-muted">
+                Translate PDF content directly in your browser.
+            </p>
+            <a href="/ai-translate" class="btn btn-primary">
+                Translate PDF
+            </a>
+        </div>
+    </div>
+    <!-- Unlock PDF -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-unlock"></i>
+            </div>
+            <h5 class="fw-bold">Unlock PDF</h5>
+            <p class="text-muted">
+                Remove PDF password security, giving you full access.
+            </p>
+            <a href="/unlock-pdf" class="btn btn-primary">
+                 Unlock PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Protect PDF -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <h5 class="fw-bold">Protect PDF</h5>
+            <p class="text-muted">
+                Encrypt your PDF with a password to prevent unauthorized access.
+            </p>
+            <a href="/protect-pdf" class="btn btn-primary">
+                 Protect PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Watermark -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-droplet-half"></i>
+            </div>
+            <h5 class="fw-bold">Watermark PDF</h5>
+            <p class="text-muted">
+                Stamp text or image watermark with custom position and transparency.
+            </p>
+            <a href="/watermark-pdf" class="btn btn-primary">
+                Add Watermark
+            </a>
+        </div>
+    </div>
+
+    <!-- Document Generator -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <h5 class="fw-bold">AI Document Generator</h5>
+            <p class="text-muted">
+                Convert between various document formats with ease.
+            </p>
+            <a href="/ai-generate" class="btn btn-primary">
+                Document Generator
+            </a>
+        </div>
+    </div>
+
+    <!-- AI Website Generator -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-globe"></i>
+            </div>
+            <h5 class="fw-bold">AI Website Summarizer</h5>
+            <p class="text-muted">
+                Transform any website into professional PDF reports or PowerPoint presentations in seconds.
+            </p>
+            <a href="/ai-website-generator" class="btn btn-primary">
+                    AI Website Summarizer
+            </a>
+        </div>
+    </div>
+
+    <!-- AI PowerPoint Generator -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-file-ppt"></i>
+            </div>
+            <h5 class="fw-bold">AI PowerPoint Generator</h5>
+            <p class="text-muted">
+                Create professional PowerPoint presentations from any website in seconds.
+            </p>
+            <a href="/ai-ppt-generator" class="btn btn-primary">
+                AI PowerPoint Generator
+            </a>
+        </div>
+    </div>
+
+
+    <!-- AI PowerPoint Generator -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-trash"></i>
+            </div>
+            <h5 class="fw-bold">Delete Pages</h5>
+            <p class="text-muted">
+                Remove unwanted pages from your PDF with ease.
+            </p>
+            <a href="/delete-pages" class="btn btn-primary">
+                Delete Pages
+            </a>
+        </div>
+    </div>
+
+    <!-- URL to PDF -->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <h5 class="fw-bold">Webpage to PDF</h5>
+            <p class="text-muted">
+                Convert any webpage into a PDF document.
+            </p>
+            <a href="/url-to-pdf" class="btn btn-primary">
+                Convert URL to PDF
+            </a>
+        </div>
+    </div>
+
+    <!--Ebook-->
+    <div class="col-md-4 mb-4">
+        <div class="glass-card text-center p-4">
+            <div class="mb-3 fs-1 text-danger">
+                <i class="bi bi-book"></i>
+            </div>
+            <h5 class="fw-bold">Clean Story</h5>
+            <p class="text-muted">
+                Extract clean story text and download as a beautiful PDF.
+            </p>
+            <a href="/clean-story" class="btn btn-primary">
+                Generate Ebook PDF
+            </a>
+        </div>
+    </div>
+
+
+<div class="glass-card mt-5">
+    <h4 class="fw-bold mb-4">Convert Files</h4>
+
+    <div class="row g-3">
+
+        <div class="col-md-3"><a href="/pdf-to-word" class="tool-link">PDF to Word</a></div>
+        <div class="col-md-3"><a href="/ai-pdf-to-ppt" class="tool-link">AI PDF to PowerPoint</a></div>
+        <div class="col-md-3"><a href="/pdf-to-excel-ai" class="tool-link">PDF to Excel</a></div>
+        <div class="col-md-3"><a href="/word-to-pdf" class="tool-link">Word to PDF</a></div>
+
+        <div class="col-md-3"><a href="/ppt-to-pdf" class="tool-link">PowerPoint to PDF</a></div>
+        <div class="col-md-3"><a href="/excel-to-pdf" class="tool-link">Excel to PDF</a></div>
+        <div class="col-md-3"><a href="/pdf-to-jpg" class="tool-link">PDF to JPG</a></div>
+        <div class="col-md-3"><a href="/jpg-to-pdf" class="tool-link">JPG to PDF</a></div>
+
+        <div class="col-md-3"><a href="/html-to-pdf" class="tool-link">HTML to PDF</a></div>
+        <div class="col-md-3"><a href="/pdf-to-pdfa" class="tool-link">PDF to PDF/A</a></div>
+
+    </div>
+</div>
+
+{% endblock %}

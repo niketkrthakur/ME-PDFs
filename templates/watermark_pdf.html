@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="glass-card">
+
+    <h2><i class="bi bi-droplet-half me-2"></i> Watermark Studio (Pro)</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- Upload PDF -->
+        <input type="file" name="file" id="pdfInput" class="form-control mb-3" required>
+
+        <!-- Watermark Text -->
+        <input type="text" name="watermark_text" id="watermarkText"
+               class="form-control mb-3"
+               placeholder="Enter watermark text">
+
+        <!-- Image Upload -->
+        <input type="file" name="watermark_image" id="imageInput"
+               class="form-control mb-3" accept="image/*">
+
+        <!-- Watermark Type -->
+        <select id="wmType" class="form-control mb-3">
+            <option value="text">Text</option>
+            <option value="image">Image</option>
+        </select>
+
+        <!-- Size -->
+        <label>Size</label>
+        <input type="range" id="size" min="50" max="300" value="150" class="form-range">
+
+        <!-- Hidden position -->
+        <input type="hidden" name="pos_x" id="posX">
+        <input type="hidden" name="pos_y" id="posY">
+
+        <!-- Preview Area -->
+        <div id="previewContainer"
+             style="position:relative; border:1px solid #ccc; height:500px; overflow:hidden; background:#eee;">
+
+            <img id="pdfPreview" style="width:100%;">
+
+            <!-- Watermark -->
+            <div id="watermarkBox"
+                 style="position:absolute; top:100px; left:100px; cursor:move; opacity:0.5;">
+
+                <div id="wmText" contenteditable="true"
+                     style="font-size:28px; color:red;">
+                    WATERMARK
+                </div>
+
+                <img id="wmImage" style="max-width:150px; display:none;">
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <label>Opacity</label>
+        <input type="range" name="opacity" id="opacity" min="0.1" max="1" step="0.1" value="0.5" class="form-range">
+
+        <label>Rotation</label>
+        <input type="range" name="rotation" id="rotation" min="0" max="360" value="0" class="form-range">
+
+        <button class="btn btn-danger w-100 mt-3">
+            Apply Watermark
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+const wm = document.getElementById("watermarkBox");
+
+// TEXT UPDATE
+document.getElementById("watermarkText").addEventListener("input", e => {
+    document.getElementById("wmText").innerText =
+        e.target.value || "WATERMARK";
+});
+
+// DRAG
+let isDragging = false;
+
+wm.addEventListener("mousedown", () => isDragging = true);
+
+document.addEventListener("mousemove", e => {
+    if (isDragging) {
+        const rect = document.getElementById("previewContainer").getBoundingClientRect();
+        wm.style.left = (e.clientX - rect.left) + "px";
+        wm.style.top = (e.clientY - rect.top) + "px";
+    }
+});
+
+document.addEventListener("mouseup", () => {
+    isDragging = false;
+    document.getElementById("posX").value = parseInt(wm.style.left);
+    document.getElementById("posY").value = parseInt(wm.style.top);
+});
+
+// OPACITY
+document.getElementById("opacity").addEventListener("input", e=>{
+    wm.style.opacity = e.target.value;
+});
+
+// ROTATION
+document.getElementById("rotation").addEventListener("input", e=>{
+    wm.style.transform = `rotate(${e.target.value}deg)`;
+});
+
+// TYPE SWITCH
+document.getElementById("wmType").addEventListener("change", e=>{
+    const type = e.target.value;
+
+    if(type === "text"){
+        document.getElementById("wmText").style.display = "block";
+        document.getElementById("wmImage").style.display = "none";
+    } else {
+        document.getElementById("wmText").style.display = "none";
+        document.getElementById("wmImage").style.display = "block";
+    }
+});
+
+// IMAGE PREVIEW
+document.getElementById("imageInput").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    const img = document.getElementById("wmImage");
+
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(event){
+            img.src = event.target.result;
+            img.style.display = "block";
+
+            document.getElementById("wmType").value = "image";
+            document.getElementById("wmText").style.display = "none";
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+// SIZE CONTROL
+document.getElementById("size").addEventListener("input", e=>{
+    const val = e.target.value;
+
+    document.getElementById("wmImage").style.width = val + "px";
+    document.getElementById("wmText").style.fontSize = (val / 5) + "px";
+});
+
+// FAKE PREVIEW
+document.getElementById("pdfPreview").src =
+    "https://dummyimage.com/800x1000/ffffff/000000&text=PDF+Preview";
+</script>
+
+{% endblock %}

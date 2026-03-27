@@ -1,0 +1,273 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="glass-card mx-auto" style="max-width:900px;">
+
+        <h3 class="fw-bold text-danger mb-4">
+            <i class="bi bi-chat-dots me-2"></i>
+            AI Chat With PDF
+        </h3>
+
+        <!-- Upload Section -->
+        <form method="POST" enctype="multipart/form-data" class="mb-4">
+            <input type="file" name="file" class="form-control mb-2" required>
+            <button type="submit" class="btn btn-danger">
+                Upload PDF
+            </button>
+        </form>
+
+        <!-- Chat Area -->
+        <div id="chatBox" class="chat-box mb-3">
+
+            {% for msg in chat_history %}
+                <div class="chat-bubble {{ msg.role }}">
+                    {{ msg.content | safe }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- Question Input -->
+        <div class="d-flex gap-2">
+            <input type="text"
+                   id="questionInput"
+                   class="form-control"
+                   placeholder="Ask something about the document...">
+            <button class="btn btn-danger"
+                    onclick="sendQuestion()">
+                Send
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+async function sendQuestion() {
+
+    const input = document.getElementById("questionInput");
+    const question = input.value;
+
+    if (!question) return;
+
+    addMessage("user", question);
+    input.value = "";
+
+    showTypingIndicator();
+
+    const response = await fetch("/ask-pdf-question", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({question: question})
+    });
+
+    const data = await response.json();
+
+    removeTypingIndicator();
+
+    if (data.answer) {
+        typeMessageAnimated(data);
+    }
+}
+
+function addMessage(role, text) {
+    const box = document.getElementById("chatBox");
+    const div = document.createElement("div");
+    div.className = "chat-bubble " + role;
+    div.innerHTML = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
+
+function typeMessageAnimated(data) {
+
+    const box = document.getElementById("chatBox");
+
+    const div = document.createElement("div");
+    div.className = "chat-bubble ai fade-in";
+
+    const section = data.section || "Unknown";
+    const answer = data.answer || "";
+
+    div.innerHTML = `
+        <div class="mb-2 text-muted small">
+            🧾 Based on section: <strong>${section}</strong>
+        </div>
+
+        <div class="ai-content">
+            ${answer}
+        </div>
+    `;
+
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+
+    const textContainer = div.querySelector(".typing-text");
+
+    let i = 0;
+    const speed = 15; // typing speed (lower = faster)
+
+    function type() {
+        if (i < answer.length) {
+            textContainer.innerHTML += answer.charAt(i);
+            i++;
+            setTimeout(type, speed);
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    type();
+
+    highlightSnippet(data.snippet);
+}
+
+</script>
+<script>function highlightSnippet(snippet) {
+
+    if (!snippet) return;
+
+    const viewer = document.getElementById("pdfViewerText");
+
+    if (!viewer) return;
+
+    let content = viewer.innerHTML;
+
+    const regex = new RegExp(snippet.substring(0, 100), "i");
+
+    content = content.replace(regex,
+        `<mark style="background: yellow;">${snippet}</mark>`
+    );
+
+    viewer.innerHTML = content;
+}</script>
+<script>function showTypingIndicator() {
+
+    const box = document.getElementById("chatBox");
+
+    const div = document.createElement("div");
+    div.className = "chat-bubble ai typing";
+    div.id = "typingIndicator";
+
+    div.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typing = document.getElementById("typingIndicator");
+    if (typing) typing.remove();
+}</script>
+<script>document
+.getElementById("questionInput")
+.addEventListener("keypress", function(e) {
+
+    if (e.key === "Enter") {
+        sendQuestion();
+    }
+
+});</script>
+
+<style>
+.ai-message h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.ai-message h2 {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.ai-message p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.ai-message ul {
+    padding-left: 20px;
+}
+
+.ai-message li {
+    margin-bottom: 6px;
+}    
+
+.chat-box {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 15px;
+    background: #fafafa;
+}
+
+.chat-bubble {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    max-width: 75%;
+}
+
+.chat-bubble.user {
+    background: #e63946;
+    color: white;
+    margin-left: auto;
+}
+
+.chat-bubble.ai {
+    background: #f1f1f1;
+    color: #333;
+}
+
+/* .chat-bubble.typing span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background: #333;
+    border-radius: 50%;
+    animation: blink 1.4s infinite;
+}
+
+.chat-bubble.typing span:nth-child(2) {
+    animation-delay: 0.2s;
+} */
+/* Fade in animation */
+.fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Typing dots */
+.typing span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background: #999;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing span:nth-child(1) { animation-delay: -0.32s; }
+.typing span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">
+    <i class="bi bi-trash me-2"></i>
+    Delete PDF Pages
+</h2>
+
+<div class="glass-card">
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- Upload PDF -->
+        <input type="file"
+               id="pdfFile"
+               name="pdf_file"
+               accept=".pdf"
+               class="form-control mb-4"
+               required>
+
+        <!-- Page Preview Grid -->
+        <div id="previewGrid" class="row mb-4"></div>
+
+        <!-- Manual Range Input -->
+        <div class="mb-4">
+            <label class="form-label fw-bold">
+                Or Enter Page Range to Delete
+            </label>
+
+            <input type="text"
+                name="page_range"
+                id="pageRange"
+                class="form-control"
+                placeholder="Example: 2-5,8">
+
+            <small class="text-muted">
+                Example: 2-5,8 (delete pages 2,3,4,5 and 8)
+            </small>
+        </div>
+
+        <!-- Hidden Input -->
+        <input type="hidden"
+               name="pages_to_delete"
+               id="pagesToDelete">
+
+        <button type="submit" class="btn btn-danger">
+            Delete Selected Pages
+        </button>
+
+    </form>
+
+</div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+
+const pdfInput = document.getElementById("pdfFile");
+const previewGrid = document.getElementById("previewGrid");
+const pagesInput = document.getElementById("pagesToDelete");
+
+let pagesToDelete = [];
+
+pdfInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function() {
+
+        const typedarray = new Uint8Array(this.result);
+
+        pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+
+            previewGrid.innerHTML = "";
+            pagesToDelete = [];
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+
+                pdf.getPage(i).then(page => {
+
+                    const scale = 0.4;
+                    const viewport = page.getViewport({ scale });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+
+                    const col = document.createElement("div");
+                    col.className = "col-md-2 mb-3 text-center page-box";
+                    col.style.cursor = "pointer";
+
+                    const label = document.createElement("div");
+                    label.innerText = "Page " + i;
+                    label.className = "small mt-2";
+
+                    col.appendChild(canvas);
+                    col.appendChild(label);
+
+                    col.onclick = function() {
+
+                        if (pagesToDelete.includes(i-1)) {
+
+                            pagesToDelete = pagesToDelete.filter(p => p !== i-1);
+                            col.classList.remove("selected-page");
+
+                        } else {
+
+                            pagesToDelete.push(i-1);
+                            col.classList.add("selected-page");
+
+                        }
+
+                        pagesInput.value = pagesToDelete.join(",");
+
+                    };
+
+                    previewGrid.appendChild(col);
+
+                });
+
+            }
+
+        });
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+});
+
+</script>
+<script>document.getElementById("pageRange").addEventListener("input", function(){
+
+    if(this.value.length > 0){
+
+        pagesToDelete = [];
+        document.getElementById("pagesToDelete").value = "";
+
+        const boxes = document.querySelectorAll(".page-box");
+
+        boxes.forEach(box=>{
+            box.classList.remove("selected-page");
+        });
+
+    }
+
+});</script>
+
+<style>
+
+/* Page Preview Style */
+
+.page-box{
+    border-radius:10px;
+    padding:6px;
+    transition:0.2s;
+}
+
+.page-box:hover{
+    transform:scale(1.03);
+}
+
+/* Selected Page */
+
+.selected-page{
+    border:3px solid #e63946;
+    background:#ffeaea;
+}
+
+canvas{
+    width:100%;
+    border-radius:6px;
+}
+
+</style>
+
+{% endblock %}

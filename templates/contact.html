@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="glass-card">
+
+    <h2 class="fw-bold mb-4">Contact Us <i class="bi bi-envelope"></i></h2>
+
+    <p class="text-muted mb-4">
+        Have questions, feedback, or issues? We'd love to hear from you.
+    </p>
+
+    <div class="row">
+
+        <!-- LEFT: CONTACT INFO -->
+        <div class="col-md-5 mb-4">
+
+            <div class="mb-4">
+                <h6 class="fw-bold"><i class="bi bi-envelope"></i> Email</h6>
+                <p class="text-muted mb-1">support5meandpdfs@gmail.com</p>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-bold"><i class="bi bi-geo-alt"></i> Location</h6>
+                <p class="text-muted mb-1">India</p>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-bold"><i class="bi bi-clock"></i> Response Time</h6>
+                <p class="text-muted mb-1">Within 24 hours</p>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: FORM -->
+        <div class="col-md-7">
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label">Your Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Message</label>
+                    <textarea name="message" rows="5" class="form-control" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4">
+                    Send Message
+                </button>
+                {% if success %}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i> Message sent successfully!
+                </div>
+                {% endif %}
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

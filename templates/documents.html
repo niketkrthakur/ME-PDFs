@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">My Documents</h2>
+
+<div class="glass-card">
+
+    {% if files %}
+        <div class="list-group">
+
+            {% for file in files %}
+            <div class="preview-card d-flex justify-content-between align-items-center p-3 mb-3">
+
+                <div>
+                    <strong>{{ file.name }}</strong>
+                    <br>
+                    <small class="text-muted">
+                        Uploaded: {{ file.uploaded }}
+                    </small>
+                </div>
+
+                <div>
+
+                    <!-- Open from cloud -->
+                    <a href="{{ file.url }}" target="_blank" class="btn btn-sm btn-primary">
+                        Open
+                    </a>
+
+                    <!-- Optional: Keep editor (local docx only) -->
+                    <a href="{{ url_for('editor', filename=file.name.replace('.pdf', '.docx')) }}" 
+                       class="btn btn-sm btn-outline-primary">
+                        Edit
+                    </a>
+
+                    <!-- Delete from DB (we'll improve later) -->
+                    <a href="{{ url_for('delete_file', filename=file.name) }}" 
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this file?')">
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+        <p class="text-muted">No documents yet. Upload a PDF to get started.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

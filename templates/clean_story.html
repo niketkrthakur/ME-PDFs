@@ -1,0 +1,742 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container py-4 py-md-5">
+  <!-- Hero Section with Ebook Theme -->
+  <div class="text-center mb-5">
+    <div class="ebook-icon mb-3">
+      <i class="bi bi-book-half text-danger" style="font-size: 3.5rem;"></i>
+    </div>
+    <h1 class="display-4 fw-bold mb-3">
+      <span class="ebook-gradient"> Clean Story Mode</span>
+    </h1>
+    <p class="lead text-muted mb-2">Transform any story into a beautifully formatted ebook-ready PDF</p>
+    <div class="d-flex justify-content-center gap-2 flex-wrap">
+      <span class="ebook-badge"><i class="bi bi-check2-circle text-success"></i> Ad-free reading</span>
+      <span class="ebook-badge"><i class="bi bi-phone text-primary"></i> Mobile optimized</span>
+      <span class="ebook-badge"><i class="bi bi-printer text-info"></i> Print ready</span>
+    </div>
+  </div>
+
+  <!-- Main Ebook Card -->
+  <div class="ebook-card mx-auto animate-float" style="max-width: 800px;">
+    
+    <!-- Ebook Preview Mockup -->
+    <div class="ebook-preview mb-4 text-center">
+      <div class="preview-book d-inline-block">
+        <div class="book-spine"></div>
+        <div class="book-cover">
+          <i class="bi bi-book text-white-50" style="font-size: 2rem;"></i>
+          <div class="small text-white-50 mt-2">Your story here</div>
+        </div>
+      </div>
+    </div>
+
+    <form method="POST" id="ebookForm" class="mt-3">
+      
+      <!-- URL Input with Smart Features -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold mb-2">
+          <i class="bi bi-link-45deg"></i> Story URL
+        </label>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text bg-light border-0 rounded-start">
+            <i class="bi bi-globe2 text-danger"></i>
+          </span>
+          <input type="url" 
+                 name="url" 
+                 id="storyUrl"
+                 class="form-control bg-light border-0" 
+                 placeholder="https://example.com/story/..."
+                 required
+                 pattern="https?://.+"
+                 autocomplete="off">
+          <button type="button" id="smartPasteBtn" class="btn btn-outline-secondary border-0 bg-light" title="Smart paste">
+            <i class="bi bi-magic"></i>
+          </button>
+        </div>
+        <div class="form-text mt-2">
+          <i class="bi bi-info-circle"></i> 
+          Supports stories from any website - automatically removes ads, comments, and clutter
+        </div>
+      </div>
+
+      <!-- Ebook Styling Options -->
+      <div class="mb-4">
+        <div class="card border-0 bg-light rounded-4">
+          <div class="card-header bg-transparent border-0 p-3">
+            <button class="btn btn-link text-decoration-none text-dark p-0 w-100 text-start fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#ebookOptions">
+              <i class="bi bi-palette"></i> Ebook Styling
+              <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </div>
+          <div class="collapse" id="ebookOptions">
+            <div class="card-body pt-0">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Font Family</label>
+                  <select name="font_family" class="form-select form-select-sm">
+                    <option value="serif">Serif (Classic)</option>
+                    <option value="sans" selected>Sans-serif (Modern)</option>
+                    <option value="mono">Monospace (Typewriter)</option>
+                    <option value="georgia">Georgia (Ebook style)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Reading Theme</label>
+                  <div class="d-flex gap-2 mt-1">
+                    <div class="theme-option active" data-theme="light">
+                      <i class="bi bi-brightness-high"></i>
+                    </div>
+                    <div class="theme-option" data-theme="sepia">
+                      <i class="bi bi-sun"></i>
+                    </div>
+                    <div class="theme-option" data-theme="dark">
+                      <i class="bi bi-moon-stars"></i>
+                    </div>
+                    <div class="theme-option" data-theme="oled">
+                      <i class="bi bi-star"></i>
+                    </div>
+                  </div>
+                  <input type="hidden" name="reading_theme" id="readingTheme" value="light">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Font Size</label>
+                  <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary fontSizeBtn" data-action="decrease">A-</button>
+                    <span id="fontSizeValue" class="fw-bold">16px</span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary fontSizeBtn" data-action="increase">A+</button>
+                  </div>
+                  <input type="hidden" name="font_size" id="fontSizeInput" value="16">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Line Height</label>
+                  <input type="range" name="line_height" class="form-range" min="1.2" max="2.2" step="0.1" value="1.6">
+                  <div class="d-flex justify-content-between small text-muted">
+                    <span>Compact</span>
+                    <span>Comfortable</span>
+                    <span>Relaxed</span>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="first_line_indent" id="firstLineIndent" checked>
+                    <label class="form-check-label" for="firstLineIndent">
+                      First line indent (paragraph styling)
+                    </label>
+                  </div>
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" name="hyphenation" id="hyphenation">
+                    <label class="form-check-label" for="hyphenation">
+                      Enable hyphenation (cleaner text flow)
+                    </label>
+                  </div>
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" name="drop_caps" id="dropCaps" checked>
+                    <label class="form-check-label" for="dropCaps">
+                      Drop caps for first paragraph (classic book style)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ebook Structure Options -->
+      <div class="mb-4">
+        <div class="card border-0 bg-light rounded-4">
+          <div class="card-header bg-transparent border-0 p-3">
+            <button class="btn btn-link text-decoration-none text-dark p-0 w-100 text-start fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#structureOptions">
+              <i class="bi bi-layout-text-window"></i> Book Structure
+              <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </div>
+          <div class="collapse" id="structureOptions">
+            <div class="card-body pt-0">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Cover Style</label>
+                  <select name="cover_style" class="form-select form-select-sm">
+                    <option value="simple" selected>Simple (Title only)</option>
+                    <option value="decorative">Decorative (With pattern)</option>
+                    <option value="minimal">Minimal (Clean)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Page Layout</label>
+                  <select name="page_layout" class="form-select form-select-sm">
+                    <option value="single">Single page (Scroll)</option>
+                    <option value="book" selected>Book style (Two-page spread)</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="table_of_contents" id="tableOfContents" checked>
+                    <label class="form-check-label" for="tableOfContents">
+                      Generate Table of Contents
+                    </label>
+                  </div>
+                  <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" name="chapter_markers" id="chapterMarkers" checked>
+                    <label class="form-check-label" for="chapterMarkers">
+                      Auto-detect chapter breaks
+                    </label>
+                  </div>
+                  <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" name="page_numbers" id="pageNumbers" checked>
+                    <label class="form-check-label" for="pageNumbers">
+                      Page numbers (footer)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Features Bar -->
+      <div class="mb-4 p-3 bg-light rounded-4">
+        <div class="row text-center g-2">
+          <div class="col-4">
+            <div class="smart-feature">
+              <i class="bi bi-robot text-danger"></i>
+              <div class="small">AI Cleanup</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="smart-feature">
+              <i class="bi bi-bookmark-heart text-danger"></i>
+              <div class="small">Save Progress</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="smart-feature">
+              <i class="bi bi-download text-danger"></i>
+              <div class="small">DRM-Free</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-grid gap-3">
+        <button type="submit" class="btn btn-danger btn-lg" id="generateEbookBtn">
+          <span class="normal-state">
+            <i class="bi bi-book"></i> Generate Ebook PDF
+            <i class="bi bi-arrow-right-short"></i>
+          </span>
+          <span class="loading-state d-none">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Creating your ebook...
+          </span>
+        </button>
+        
+        <button type="button" id="previewStyleBtn" class="btn btn-outline-secondary">
+          <i class="bi bi-eye"></i> Preview Style
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Sample Stories Section -->
+  <div class="mt-5">
+    <h6 class="text-center text-muted mb-3">
+      <i class="bi bi-stars"></i> Try with sample stories
+    </h6>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      <button class="sample-story-btn" data-url="https://www.gutenberg.org/files/84/84-h/84-h.htm">
+        Frankenstein
+      </button>
+      <button class="sample-story-btn" data-url="https://www.gutenberg.org/files/1342/1342-h/1342-h.htm">
+        Pride & Prejudice
+      </button>
+      <button class="sample-story-btn" data-url="https://www.gutenberg.org/files/11/11-h/11-h.htm">
+        Alice in Wonderland
+      </button>
+      <button class="sample-story-btn" data-url="https://www.gutenberg.org/files/1661/1661-h/1661-h.htm">
+        Sherlock Holmes
+      </button>
+    </div>
+  </div>
+
+  <!-- Ebook Features Section -->
+  <div class="row mt-5 g-4">
+    <div class="col-md-3 col-6">
+      <div class="ebook-feature text-center">
+        <i class="bi bi-trash3 text-danger fs-4"></i>
+        <div class="fw-semibold mt-2">Ad-Free</div>
+        <small class="text-muted">No distractions</small>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="ebook-feature text-center">
+        <i class="bi bi-type-bold text-danger fs-4"></i>
+        <div class="fw-semibold mt-2">Custom Fonts</div>
+        <small class="text-muted">Your choice</small>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="ebook-feature text-center">
+        <i class="bi bi-columns-gap text-danger fs-4"></i>
+        <div class="fw-semibold mt-2">Two-Column</div>
+        <small class="text-muted">Book layout</small>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="ebook-feature text-center">
+        <i class="bi bi-cloud-download text-danger fs-4"></i>
+        <div class="fw-semibold mt-2">Offline Ready</div>
+        <small class="text-muted">Read anywhere</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ebook-gradient {
+    background: #dc3545;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .ebook-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fef9f0 100%);
+    border-radius: 32px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(220, 53, 69, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .ebook-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .ebook-badge {
+    background: rgba(220, 53, 69, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #dc3545;
+  }
+  
+  .preview-book {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .book-cover {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(135deg, #dc3545, #bb2d3b);
+    border-radius: 4px 8px 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+  }
+  
+  .book-spine {
+    position: absolute;
+    left: -4px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(90deg, #8b0000, #dc3545);
+    border-radius: 2px 0 0 2px;
+  }
+  
+  .book-cover:hover {
+    transform: scale(1.05);
+  }
+  
+  .theme-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+  
+  .theme-option[data-theme="light"] {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .theme-option[data-theme="sepia"] {
+    background: #fbf0d9;
+    color: #5b3c1e;
+  }
+  
+  .theme-option[data-theme="dark"] {
+    background: #2c3e50;
+    color: #ecf0f1;
+  }
+  
+  .theme-option[data-theme="oled"] {
+    background: #000000;
+    color: #ffffff;
+  }
+  
+  .theme-option.active {
+    border-color: #dc3545;
+    transform: scale(1.1);
+  }
+  
+  .theme-option:hover {
+    transform: scale(1.1);
+  }
+  
+  .smart-feature {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .smart-feature:hover {
+    transform: translateY(-3px);
+  }
+  
+  .ebook-feature {
+    padding: 12px;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    background: rgba(220, 53, 69, 0.03);
+  }
+  
+  .ebook-feature:hover {
+    background: rgba(220, 53, 69, 0.1);
+    transform: translateY(-3px);
+  }
+  
+  .sample-story-btn {
+    background: transparent;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+  
+  .sample-story-btn:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    transform: translateY(-2px);
+  }
+  
+  .form-range::-webkit-slider-thumb {
+    background: #dc3545;
+  }
+  
+  .form-range::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .ebook-card {
+      padding: 1.5rem;
+    }
+    
+    .display-4 {
+      font-size: 1.8rem;
+    }
+    
+    .theme-option {
+      width: 35px;
+      height: 35px;
+    }
+  }
+
+  .preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9998;
+    }
+
+    .preview-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    z-index: 9999;
+    width: 90%;
+    max-width: 500px;
+    }
+  
+  /* Loading animation */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .btn-danger:disabled {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('ebookForm');
+    const urlInput = document.getElementById('storyUrl');
+    const generateBtn = document.getElementById('generateEbookBtn');
+    const normalState = generateBtn.querySelector('.normal-state');
+    const loadingState = generateBtn.querySelector('.loading-state');
+    const smartPasteBtn = document.getElementById('smartPasteBtn');
+    const previewBtn = document.getElementById('previewStyleBtn');
+    const fontSizeBtns = document.querySelectorAll('.fontSizeBtn');
+    const fontSizeValue = document.getElementById('fontSizeValue');
+    const fontSizeInput = document.getElementById('fontSizeInput');
+    const themeOptions = document.querySelectorAll('.theme-option');
+    const readingThemeInput = document.getElementById('readingTheme');
+    
+    let currentFontSize = 16;
+    
+    // Font size controls
+    fontSizeBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const action = this.dataset.action;
+        if (action === 'increase' && currentFontSize < 24) {
+          currentFontSize += 2;
+        } else if (action === 'decrease' && currentFontSize > 10) {
+          currentFontSize -= 2;
+        }
+        fontSizeValue.textContent = currentFontSize + 'px';
+        fontSizeInput.value = currentFontSize;
+      });
+    });
+    
+    // Theme selection
+    themeOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const theme = this.dataset.theme;
+        themeOptions.forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+        readingThemeInput.value = theme;
+        
+        // Visual feedback
+        const ebookCard = document.querySelector('.ebook-card');
+        if (theme === 'dark') {
+          ebookCard.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+          ebookCard.style.color = '#fff';
+        } else if (theme === 'sepia') {
+          ebookCard.style.background = 'linear-gradient(135deg, #fbf0d9 0%, #f5e6d3 100%)';
+          ebookCard.style.color = '#5b3c1e';
+        } else if (theme === 'oled') {
+          ebookCard.style.background = '#000000';
+          ebookCard.style.color = '#ffffff';
+        } else {
+          ebookCard.style.background = 'linear-gradient(135deg, #ffffff 0%, #fef9f0 100%)';
+          ebookCard.style.color = 'inherit';
+        }
+      });
+    });
+    
+    // Smart paste with URL cleaning
+    smartPasteBtn.addEventListener('click', async function() {
+      try {
+        const text = await navigator.clipboard.readText();
+        // Clean URL - remove tracking parameters
+        let cleanUrl = text.trim();
+        if (cleanUrl.startsWith('http')) {
+          // Remove common tracking parameters
+          cleanUrl = cleanUrl.replace(/\?utm_[^&]+(&|$)/g, '');
+          cleanUrl = cleanUrl.replace(/\?ref=[^&]+(&|$)/g, '');
+          cleanUrl = cleanUrl.replace(/&$/, '');
+          urlInput.value = cleanUrl;
+          showNotification('URL pasted and cleaned!', 'success');
+        } else if (text) {
+          urlInput.value = text;
+          showNotification('Content pasted (ensure it\'s a valid URL)', 'info');
+        } else {
+          showNotification('Clipboard is empty', 'warning');
+        }
+      } catch (err) {
+        showNotification('Please paste manually (Ctrl+V)', 'info');
+      }
+    });
+    
+    previewBtn.addEventListener('click', function () {
+
+        const fontFamily = document.querySelector('[name="font_family"]').value;
+        const lineHeight = document.querySelector('[name="line_height"]').value;
+        const firstLineIndent = document.getElementById('firstLineIndent').checked;
+
+        let fontFamilyValue = '';
+        switch(fontFamily) {
+            case 'serif': fontFamilyValue = 'Georgia, serif'; break;
+            case 'sans': fontFamilyValue = 'Arial, sans-serif'; break;
+            case 'mono': fontFamilyValue = 'monospace'; break;
+            case 'georgia': fontFamilyValue = 'Georgia'; break;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.id = "previewWrapper";
+
+        wrapper.innerHTML = `
+            <div class="preview-overlay"></div>
+
+            <div class="preview-box" style="font-family:${fontFamilyValue}; line-height:${lineHeight}">
+            <h3>Preview Style</h3>
+
+            <p ${firstLineIndent ? 'style="text-indent:2em;"' : ''}>
+                This is how your story text will look. The quick brown fox jumps over the lazy dog.
+            </p>
+
+            <p ${firstLineIndent ? 'style="text-indent:2em;"' : ''}>
+                Second paragraph shows the same styling. Adjust settings as you like.
+            </p>
+
+            <button id="closePreviewBtn" class="btn btn-danger mt-3">
+                Close Preview
+            </button>
+            </div>
+        `;
+
+        document.body.appendChild(wrapper);
+        document.body.style.overflow = "hidden";
+
+        function closePreview() {
+            wrapper.remove();
+            document.body.style.overflow = "auto";
+        }
+
+        document.querySelector(".preview-overlay").onclick = closePreview;
+        document.getElementById("closePreviewBtn").onclick = closePreview;
+        });
+    
+    // Sample story buttons
+    document.querySelectorAll('.sample-story-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        urlInput.value = this.dataset.url;
+        showNotification('Sample story loaded! Click Generate to create your ebook.', 'success');
+        urlInput.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+      const url = urlInput.value.trim();
+      
+      if (!url) {
+        e.preventDefault();
+        showNotification('Please enter a story URL', 'warning');
+        return;
+      }
+      
+      try {
+        new URL(url);
+      } catch {
+        e.preventDefault();
+        showNotification('Please enter a valid URL (include http:// or https://)', 'danger');
+        return;
+      }
+      
+      // Show loading state
+      normalState.classList.add('d-none');
+      loadingState.classList.remove('d-none');
+      generateBtn.disabled = true;
+      
+      // Save to ebook history
+      saveToEbookHistory(url);
+    });
+    
+    // Save to history
+    function saveToEbookHistory(url) {
+      let history = localStorage.getItem('ebookHistory');
+      history = history ? JSON.parse(history) : [];
+      
+      history.unshift({
+        url: url,
+        timestamp: new Date().toLocaleString(),
+        date: new Date().toISOString(),
+        font_size: currentFontSize,
+        theme: readingThemeInput.value
+      });
+      
+      history = history.slice(0, 5);
+      localStorage.setItem('ebookHistory', JSON.stringify(history));
+    }
+    
+    // Notification system
+    function showNotification(message, type = 'info') {
+      let container = document.querySelector('.notification-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = 'notification-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+      }
+      
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type} alert-dismissible fade show`;
+      notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      `;
+      container.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+    
+    // Load recent ebook settings
+    const savedSettings = localStorage.getItem('ebookSettings');
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings);
+      if (settings.font_size) {
+        currentFontSize = settings.font_size;
+        fontSizeValue.textContent = currentFontSize + 'px';
+        fontSizeInput.value = currentFontSize;
+      }
+      if (settings.theme) {
+        const themeOption = document.querySelector(`.theme-option[data-theme="${settings.theme}"]`);
+        if (themeOption) themeOption.click();
+      }
+    }
+    
+    // Save settings on change
+    function saveSettings() {
+      const settings = {
+        font_size: currentFontSize,
+        theme: readingThemeInput.value
+      };
+      localStorage.setItem('ebookSettings', JSON.stringify(settings));
+    }
+    
+    // Auto-save settings
+    setInterval(saveSettings, 5000);
+  });
+</script>
+
+{% endblock %}

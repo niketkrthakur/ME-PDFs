@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ME & PDFs | All-in-One PDF Tools</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/dY1f5CK/web-logo.png">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9fb;
+            background: linear-gradient(135deg, #fff5f6, #f9f9fb);
+        }
+
+
+        .active-link {
+            background: #ffe5e8;
+            color: #e63946 !important;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #e63946;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #d62839;
+        }
+
+        .card-modern {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #e63946;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover {
+            background: rgba(230, 57, 70, 0.05);
+        }
+
+        .drop-zone.dragover {
+            background: rgba(230, 57, 70, 0.1);
+            border-color: #d62839;
+            transform: scale(1.02);
+        }
+
+        .preview-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        #saveStatus {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        #saveStatus {
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+        .top-strip {
+            width: 100%;
+            background: linear-gradient(90deg, #e63946, #ff6b6b);
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .ilovepdf-strip {
+            width: 100%;
+            background: linear-gradient(90deg, #e63946, #ff4d6d);
+            color: white;
+            padding: 8px 0;
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+
+            box-shadow: 0 8px 30px rgba(230, 57, 70, 0.35);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        /* .ilovepdf-strip::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background: rgba(255,255,255,0.3);
+        } */
+
+        .strip-inner {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .strip-brand {
+            font-size: 14px;
+            letter-spacing: 0.4px;
+        }
+
+        .strip-brand strong {
+            font-weight: 700;
+        }
+
+        .strip-brand span {
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .strip-cta {
+            position: absolute;
+            right: 24px;
+            background: white;
+            color: #e63946;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .strip-cta:hover {
+            background: #111;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tool-link {
+            display: block;
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            text-decoration: none;
+            color: #333;
+            transition: 0.2s ease;
+        }
+
+        .tool-link:hover {
+            background: #e63946;
+            color: white;
+        }
+
+        .pdf-page {
+            position: relative;
+        }
+
+        .pdf-image {
+            width: 100%;
+            pointer-events: none;   /* CRITICAL */
+        }
+
+        .editable-text {
+            position: absolute;
+            z-index: 20;          /* MUST be higher than image */
+            pointer-events: auto; /* ensure clickable */
+            cursor: text;
+            white-space: pre-wrap;
+            outline: none;
+        }
+
+        .editable-text {
+            border: 1px solid red !important;
+            background: rgba(255,0,0,0.05);
+        }
+
+        .navbar .nav-link {
+            font-weight: 500;
+            margin-right: 15px;
+        }
+
+        .navbar .nav-link:hover {
+            color: #e63946 !important;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+        }
+
+                /* ===== Sticky Glass Navbar ===== */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.3s ease;
+            z-index: 1050;
+        }
+
+        /* ===== Smooth Theme Transition ===== */
+        body {
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ===== Dark Mode ===== */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a1a, #111);
+            color: #f1f1f1;
+        }
+
+        body.dark-mode .glass-card {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        body.dark-mode .footer-glass {
+            background: rgba(20,20,20,0.7);
+        }
+
+        body.dark-mode .navbar-glass {
+            background: rgba(20,20,20,0.7);
+            backdrop-filter: blur(16px);
+        }
+
+        body.dark-mode .navbar-scrolled {
+            background: rgba(20,20,20,0.9);
+        }
+
+        body.dark-mode .nav-link {
+            color: #f1f1f1 !important;
+        }
+
+        body.dark-mode .dropdown-menu {
+            background: #222;
+            color: white;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: white;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background: #333;
+        }
+
+        /* ============================= */
+        /* AI Glow Effect */
+        /* ============================= */
+
+        .ai-glow > .nav-link {
+            position: relative;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .ai-glow > .nav-link::before {
+            content: "";
+            position: absolute;
+            inset: -6px -12px;
+            border-radius: 12px;
+            background: radial-gradient(circle at center, rgba(230,57,70,0.25), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .ai-glow:hover > .nav-link::before {
+            opacity: 1;
+        }
+
+        /* NEW Badge */
+        .ai-badge {
+            background: linear-gradient(90deg, #e63946, #ff6b6b);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-weight: 600;
+            animation: pulseGlow 2s infinite;
+        }
+
+        /* Pulsing Glow Animation */
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0px rgba(230,57,70,0.5); }
+            50% { box-shadow: 0 0 8px rgba(230,57,70,0.8); }
+            100% { box-shadow: 0 0 0px rgba(230,57,70,0.5); }
+        }
+
+        /* ============================= */
+        /* Animated Dropdown */
+        /* ============================= */
+
+        .dropdown-animate {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.25s ease;
+            display: block;
+            visibility: hidden;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .dropdown:hover .dropdown-animate {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        /* Shadow appears on scroll */
+        .navbar-scrolled {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.85);
+        }
+
+        .ai-output h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #e63946;
+        }
+
+        .ai-output h3 {
+            font-size: 16px;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .ai-output p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .ai-output ul {
+            padding-left: 20px;
+        }
+
+        .ai-output li {
+            margin-bottom: 6px;
+        }
+
+        .footer-glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .footer-link {
+            text-decoration: none;
+            color: #6c757d;
+        }
+
+        .footer-link:hover {
+            color: #e63946;
+        }
+
+        .ai-output {
+            line-height: 1.6;
+            font-size: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Floating Button */
+        #aiAssistantBtn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #e63946, #ff6b6b);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(230,57,70,0.4);
+            z-index: 9999;
+            transition: 0.3s ease;
+        }
+
+        #aiAssistantBtn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Slide Panel */
+        #aiAssistantPanel {
+            position: fixed;
+            top: 80px;                 /* distance from top */
+            right: -450px;             /* hidden position */
+            width: 450px;
+            height: 80vh;              /* not full height */
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        #aiAssistantPanel.active {
+            right: 25px;              /* visible position */
+        }
+
+        .ai-panel-header {
+            background: #e63946;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .ai-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fafafa;
+            
+        }
+
+        .ai-panel-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .ai-panel-input input {
+            flex: 1;
+            border-radius: 20px;
+        }
+
+        .ai-panel-input button {
+            background: #e63946;
+            border: none;
+            color: white;
+            margin-left: 8px;
+            border-radius: 50%;
+            width: 40px;
+        }
+
+        /* Chat bubbles */
+        .assistant-bubble {
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            font-size: 14px;
+        }
+
+        .assistant-user {
+            background: #e63946;
+            color: white;
+            margin-left: auto;
+        }
+
+        .assistant-ai {
+            background: #f1f1f1;
+            color: #333;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            transition: 0.3s ease;
+            box-shadow: 0 20px 40px rgba(230,57,70,0.15);
+        }
+
+        .tool-icon {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 50%;
+            background: rgba(230,57,70,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #e63946;
+        }
+
+        /* Mobile */
+        @media (max-width: 500px) {
+            #aiAssistantPanel {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ai-output {
+                font-size: 14px;
+            }
+
+            .glass-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+        }
+
+        /* ===== TEXT FIX ===== */
+        body.dark-mode {
+            color: #e4e4e7;
+        }
+
+        body.dark-mode p,
+        body.dark-mode span,
+        body.dark-mode small {
+            color: #cfcfd3 !important;
+        }
+
+        /* ===== HEADINGS ===== */
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        body.dark-mode h5,
+        body.dark-mode h6 {
+            color: #ffffff;
+        }
+
+        /* ===== CARDS ===== */
+        body.dark-mode .card-modern,
+        body.dark-mode .preview-card {
+            background: rgba(30,30,30,0.7);
+            color: #eaeaea;
+        }
+
+        /* ===== GLASS CARD ===== */
+        body.dark-mode .glass-card {
+            background: rgba(25,25,25,0.6);
+            color: #f1f1f1;
+        }
+
+        /* ===== BUTTONS ===== */
+        body.dark-mode .btn-outline-dark {
+            border-color: #aaa;
+            color: #fff;
+        }
+
+        body.dark-mode .btn-outline-dark:hover {
+            background: #fff;
+            color: #111;
+        }
+
+        /* ===== INPUTS ===== */
+        body.dark-mode input,
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background: #1e1e1e;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        /* ===== DROPDOWN ===== */
+        body.dark-mode .dropdown-menu {
+            background: #1f1f1f;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #ddd;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background: #333;
+        }
+
+        /* ===== FOOTER ===== */
+        body.dark-mode .footer-link {
+            color: #bbb;
+        }
+
+        body.dark-mode .footer-link:hover {
+            color: #fff;
+        }
+
+        /* ===== TOOL CARDS ===== */
+        body.dark-mode .tool-link {
+            background: #222;
+            color: #ddd;
+        }
+
+        body.dark-mode .tool-link:hover {
+            background: #e63946;
+            color: white;
+        }
+
+        /* ===== AI PANEL ===== */
+        body.dark-mode #aiAssistantPanel {
+            background: #1e1e1e;
+        }
+
+        body.dark-mode .ai-panel-body {
+            background: #111;
+        }
+
+        body.dark-mode .assistant-ai {
+            background: #2a2a2a;
+            color: #eee;
+        }
+        * {
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* body.dark-mode .navbar-brand img {
+            filter: brightness(0) invert(1);
+        } */
+
+        .navbar-brand img {
+            transition: all 0.35s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.1) translateY(-2px);
+            filter: drop-shadow(0 0 12px rgba(230,57,70,0.5));
+        }
+        .navbar-brand:active img {
+            transform: scale(0.95);
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b5 !important;
+        }
+        body.dark-mode footer {
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /*   Google Translate Styling */
+        #google_translate_element {
+            font-size: 14px;
+        }
+
+        .goog-te-gadget {
+            color: transparent !important;
+        }
+
+        .goog-te-gadget select {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        /* Hide ugly Google branding */
+        .goog-logo-link {
+            display: none !important;
+        }
+        .goog-te-gadget span {
+            display: none !important;
+        }
+
+        /* Dark mode fix */
+        body.dark-mode .goog-te-gadget select {
+            background: #1e1e1e;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        #google_translate_element {
+            transform: scale(0.9);
+        }
+
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        .goog-te-gadget span {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<body>
+
+<!-- Top Marketing Strip -->
+<!-- <div class="ilovepdf-strip">
+    <div class="strip-inner">
+        <div class="strip-brand">
+            <strong>ME & PDFs</strong>
+            <span> — Edit. Convert. Control your documents.</span>
+        </div>
+
+        <a href="/upload_page" class="strip-cta">
+            Start Free →
+        </a>
+    </div>
+</div> -->
+
+<!-- Main Navbar (Desktop + Mobile) -->
+<nav class="navbar navbar-expand-lg navbar-glass fixed-top">
+    <div class="container-fluid px-4">
+
+        <!-- LEFT: LOGO -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img id="logo"
+                src="https://i.ibb.co/s9ktDh3z/desktop-logo.png"
+                 alt="ME & PDFs Logo"
+                 style="height:40px; width:auto;">
+        </a>
+
+        <!-- TOGGLE (Mobile) -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- COLLAPSE CONTENT -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+
+            <!-- CENTER MENU -->
+            <ul class="navbar-nav mx-auto align-items-lg-center">
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active text-danger fw-bold{% endif %}" href="/">
+                        <i class="bi bi-house-door me-1"></i> Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/upload_page' %}active text-danger fw-bold{% endif %}" href="/upload_page">
+                        <i class="bi bi-cloud-upload me-1"></i> Upload
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/dashboard' %}active text-danger fw-bold{% endif %}" href="/dashboard">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/documents' %}active text-danger fw-bold{% endif %}" href="/documents">
+                        <i class="bi bi-folder2-open me-1"></i> My Documents
+                    </a>
+                </li>
+
+                <!-- Tools Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       data-bs-toggle="dropdown">
+                        Tools
+                    </a>
+                    <ul class="dropdown-menu dropdown-animate">
+                        <li><a class="dropdown-item" href="/merge">Merge PDF</a></li>
+                        <li><a class="dropdown-item" href="/split">Split PDF</a></li>
+                        <li><a class="dropdown-item" href="/compress">Compress PDF</a></li>
+                        <li><a class="dropdown-item" href="/sign-pdf">Sign PDF</a></li>
+                        {% if session.get("user_email") == "support5meandpdfs@gmail.com" %}
+                        <li>
+                            <a class="dropdown-item" href="/admin/messages">
+                                <i class="bi bi-shield-lock me-2"></i> Admin Panel
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item text-danger" 
+                                href="/logout"
+                                onclick="return confirm('Are you sure you want to logout?')">
+                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                            </a>
+                        </li>
+
+                        
+                    </ul>
+                </li>
+
+                <!-- <AI Tools Dropdown -->
+                <li class="nav-item dropdown ai-glow">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center"
+                    href="#"
+                    data-bs-toggle="dropdown">
+                        <i class="bi bi-stars me-1"></i>
+                        AI Tools
+                        <span class="ai-badge ms-2">NEW</span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-animate">
+                        <li>
+                            <a class="dropdown-item" href="/ai-summarise">
+                                <i class="bi bi-robot me-2"></i>
+                                AI Summarise
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/ai-translate">
+                                <i class="bi bi-translate me-2"></i>
+                                AI Translate
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/ai-rewrite-tool" onclick="rewriteAI('formal')">
+                                <i class="bi bi-pencil-square me-2"></i>
+                                AI Rewrite
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/ai-chat-pdf">
+                                <i class="bi bi-chat-dots me-2"></i>
+                                AI Chat With PDF
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/ai-generate">
+                                <i class="bi bi-robot me-2"></i>
+                                AI Document Generator
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/ai-ppt-generator">
+                                <i class="bi bi-file-ppt me-2"></i>
+                                AI PowerPoint Generator
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                
+
+            </ul>
+
+            <!-- RIGHT SIDE -->
+            <div class="d-flex align-items-center gap-3">
+
+                <!-- Dark Mode -->
+                <button id="darkModeToggle"
+                        class="btn btn-sm btn-outline-dark">
+                    ⏾
+                </button>
+
+                {% if session.get("user") %}
+
+                    <!--    USER DROPDOWN -->
+                    <div class="dropdown">
+                        <a class="btn btn-outline-dark dropdown-toggle"
+                        href="#"
+                        data-bs-toggle="dropdown">
+
+                            <i class="bi bi-person-circle me-1"></i>
+                            {{ session["user"] }}
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <span class="dropdown-item-text small text-muted">
+                                    Logged in
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item" href="/documents">
+                                    <i class="bi bi-folder me-2"></i>My Files
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item text-danger" href="/logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                {% else %}
+
+                    <!--  NOT LOGGED IN -->
+                    <a href="/login" class="btn btn-outline-dark">
+                        Login
+                    </a>
+
+                    <a href="/signup" class="btn btn-danger px-4">
+                        Sign Up
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+</nav>
+<!-- Page Content -->
+<div class="container" style="margin-top: 110px;">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Floating AI Button -->
+<div id="aiAssistantBtn" onclick="toggleAssistant()">
+    <i class="bi bi-stars"></i>
+</div>
+
+<!-- AI Slide Panel -->
+<div id="aiAssistantPanel">
+    <div class="ai-panel-header">
+        <span><i class="bi bi-robot me-2"></i>ME & PDFs AI</span>
+        <button onclick="toggleAssistant()">✕</button>
+    </div>
+
+    <div id="aiAssistantChat" class="ai-panel-body"></div>
+
+    <div class="ai-panel-input">
+        <input type="text"
+               id="assistantInput"
+               placeholder="Ask AI anything..."
+               class="form-control"
+               onkeydown="if(event.key==='Enter'){sendAssistantMessage()}">
+        <button onclick="sendAssistantMessage()">
+            <i class="bi bi-send"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="mt-5 pt-5 pb-4 footer-glass">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold">ME & PDFs</h5>
+                <p class="text-muted small">
+                    Convert, edit, sign and manage PDFs online with ease.
+                    Fast, secure and professional.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h6 class="fw-bold">Tools</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="/merge" class="footer-link">Merge PDF</a></li>
+                    <li><a href="/split" class="footer-link">Split PDF</a></li>
+                    <li><a href="/compress" class="footer-link">Compress PDF</a></li>
+                    <li><a href="/sign-pdf" class="footer-link">Sign PDF</a></li>
+                    <li><a href="/ai-summarise" class="footer-link">AI Summarise</a></li>
+                    <li><a href="/ai-translate" class="footer-link">AI Translate</a></li>
+                    <li><a href="/ai-rewrite-tool" class="footer-link">AI Rewrite</a></li>
+                    <li><a href="/ai-chat-pdf" class="footer-link">AI Chat With PDF</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h6 class="fw-bold">Legal</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="/privacy" class="footer-link">Privacy Policy</a></li>
+                    <li><a href="/terms" class="footer-link">Terms of Service</a></li>
+                    <li><a href="/contact" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <!-- <h6 class="fw-bold"><i class="bi bi-globe me-2"></i>Language</h6> -->
+
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-light dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="bi bi-globe"></i> Select Language
+                    </button>
+
+                    <div class="dropdown-menu p-2">
+                        <div id="google_translate_element"></div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <hr>
+
+        <div class="text-center small text-muted">
+           Developed by Niket & Nikhil | © 2026 ME & PDFs. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<script>
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,fr,de,es,zh-CN,ru,ja,ar',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+}
+</script>
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+window.addEventListener("scroll", function() {
+    const navbar = document.querySelector(".navbar");
+    if (window.scrollY > 10) {
+        navbar.classList.add("navbar-scrolled");
+    } else {
+        navbar.classList.remove("navbar-scrolled");
+    }
+});
+</script>
+
+<script>
+const langSwitcher = document.getElementById("langSwitcher");
+
+// Store original text
+let originalTexts = [];
+
+//  Collect all text elements
+function collectText() {
+    const elements = document.querySelectorAll("h1,h2,h3,h4,h5,p,span,a,button,label");
+
+    originalTexts = [];
+
+    elements.forEach(el => {
+        if (el.innerText.trim().length > 0 && el.innerText.length < 200) {
+            originalTexts.push({
+                element: el,
+                text: el.innerText
+            });
+        }
+    });
+}
+
+//   Translate all text
+async function translatePage(lang) {
+
+    for (let item of originalTexts) {
+
+        try {
+            const res = await fetch("/ai-translate-site", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    text: item.text,
+                    lang: lang
+                })
+            });
+
+            const data = await res.json();
+            item.element.innerText = data.translated;
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+}
+
+//   Handle change
+langSwitcher.addEventListener("change", function() {
+
+    const lang = this.value;
+
+    if (lang === "English") {
+        // restore original
+        originalTexts.forEach(item => {
+            item.element.innerText = item.text;
+        });
+        return;
+    }
+
+    translatePage(lang);
+});
+
+// Initialize
+collectText();
+</script>
+
+<script>
+const toggleBtn = document.getElementById("darkModeToggle");
+const logo = document.getElementById("logo");
+
+toggleBtn.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+
+    if (document.body.classList.contains("dark-mode")) {
+        toggleBtn.innerHTML = "𖤓";
+        toggleBtn.classList.replace("btn-outline-dark", "btn-outline-light");
+        localStorage.setItem("theme", "dark");
+
+        //   Dark mode logo
+        if (logo) {
+            logo.src = "https://i.ibb.co/G3Tm2GPn/Photo-Fixer-Bot-Photo-Fixer-Bot-light-mode-removebg-preview.png";
+        }
+
+    } else {
+        toggleBtn.innerHTML = "⏾";
+        toggleBtn.classList.replace("btn-outline-light", "btn-outline-dark");
+        localStorage.setItem("theme", "light");
+
+        //   Light mode logo
+        if (logo) {
+            logo.src = "https://i.ibb.co/s9ktDh3z/desktop-logo.png";
+        }
+    }
+});
+
+
+//   Load saved theme on refresh
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+    toggleBtn.innerHTML = "𖤓";
+    toggleBtn.classList.replace("btn-outline-dark", "btn-outline-light");
+
+    if (logo) {
+        logo.src = "https://i.ibb.co/G3Tm2GPn/Photo-Fixer-Bot-Photo-Fixer-Bot-light-mode-removebg-preview.png";
+    }
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const text = document.getElementById("aiOutput");
+    if (text) {
+        const words = text.innerText.trim().split(/\s+/).length;
+        document.getElementById("wordCount").innerText = words;
+    }
+});
+
+function copySummary() {
+    const text = document.getElementById("aiOutput").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Summary copied!");
+}
+</script>
+
+<script>
+function rewriteAI(action) {
+
+    const contentDiv = document.getElementById("aiOutput");
+    const originalHTML = contentDiv.innerHTML;
+
+    fetch("/ai-rewrite", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `summary_html=${encodeURIComponent(originalHTML)}&action=${action}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.result) {
+            contentDiv.innerHTML = data.result;
+        }
+    })
+    .catch(err => console.error(err));
+}
+</script>
+<script>
+let currentSpeech = null;
+
+function getSpeechCode(language) {
+
+    const langMap = {
+        "English": "en-US",
+        "Hindi": "hi-IN",
+        "Spanish": "es-ES",
+        "French": "fr-FR",
+        "German": "de-DE",
+        "Japanese": "ja-JP",
+        "Chinese": "zh-CN"
+    };
+
+    return langMap[language] || "en-US";
+}
+
+function speakTranslation() {
+
+    stopSpeech();
+
+    const text = document.getElementById("translateOutput").innerText;
+    const language = document.getElementById("detectedLang").innerText;
+
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = getSpeechCode(language);
+    speech.rate = 1;
+
+    currentSpeech = speech;
+
+    window.speechSynthesis.speak(speech);
+}
+
+function stopSpeech() {
+    window.speechSynthesis.cancel();
+}
+</script>
+
+<script>
+function toggleAssistant() {
+    const panel = document.getElementById("aiAssistantPanel");
+    panel.classList.toggle("active");
+}
+
+function addAssistantMessage(role, text) {
+
+    const chat = document.getElementById("aiAssistantChat");
+
+    const div = document.createElement("div");
+    div.className = "assistant-bubble " + (role === "user" ? "assistant-user" : "assistant-ai");
+    div.innerHTML = text;
+
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendAssistantMessage() {
+
+    const input = document.getElementById("assistantInput");
+    const question = input.value.trim();
+
+    if (!question) return;
+
+    addAssistantMessage("user", question);
+    input.value = "";
+
+    addAssistantMessage("ai", "Typing...");
+
+    const response = await fetch("/ask-global-ai", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({question: question})
+    });
+
+    const data = await response.json();
+
+    // Remove typing indicator
+    const chat = document.getElementById("aiAssistantChat");
+    chat.lastChild.remove();
+
+    addAssistantMessage("ai", data.answer || "No response.");
+}
+</script>
+
+</body>
+</html>

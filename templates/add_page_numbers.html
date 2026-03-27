@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="glass-card">
+        <h3 class="fw-bold mb-4">Add Page Numbers</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label class="form-label">Upload PDF</label>
+                <input type="file" name="file" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Position</label>
+                <select name="position" class="form-select">
+                    <option value="bottom">Bottom</option>
+                    <option value="top">Top</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Alignment</label>
+                <select name="alignment" class="form-select">
+                    <option value="center">Center</option>
+                    <option value="left">Left</option>
+                    <option value="right">Right</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Add Page Numbers
+            </button>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

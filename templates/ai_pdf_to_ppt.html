@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<i class="bi bi-file-earmark-ppt-fill text-danger" style="font-size: 4rem; "></i>
+<div class="glass-card">
+    
+    <h2>AI PDF to PowerPoint</h2>
+    <p class="text-muted">Convert PDF into editable slides using AI</p>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="file" class="form-control mb-3" required>
+
+        <!-- 🎨 THEME SELECTOR -->
+        <label class="form-label">Choose Theme</label>
+        <select name="theme" class="form-select mb-3">
+            <option value="modern">Modern (Recommended)</option>
+            <option value="dark">Dark Mode</option>
+            <option value="business">Business</option>
+        </select>
+
+        <button class="btn btn-danger w-100">
+            <i class="bi bi-arrow-clockwise"></i> Generate Premium PPT
+        </button>
+
+    </form>
+
+</div>
+{% endblock %}

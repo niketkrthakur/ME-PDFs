@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">Compress PDF</h2>
+
+<div class="glass-card text-center">
+
+    <p class="text-muted mb-4">
+        Reduce PDF file size while maintaining quality.
+    </p>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="file"
+               name="pdf_file"
+               accept=".pdf"
+               required
+               class="form-control mb-4">
+
+        <label class="fw-semibold mb-2">Compression Level</label>
+
+        <select name="compression_level"
+                class="form-select mb-4"
+                required>
+            <option value="low">Low (Best Quality)</option>
+            <option value="medium" selected>Medium (Balanced)</option>
+            <option value="high">High (Smallest Size)</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Compress PDF
+        </button>
+
+    </form>
+
+</div>
+
+{% if original_size %}
+
+<div class="glass-card mt-4 text-center">
+
+    <h5 class="fw-bold mb-3">Compression Result</h5>
+
+    <p>Original Size: <strong>{{ original_size }} MB</strong></p>
+    <p>Compressed Size: <strong>{{ compressed_size }} MB</strong></p>
+    <p>Reduction: <strong class="text-success">{{ reduction }}%</strong></p>
+
+    <a href="{{ url_for('download_file', filename=download_file) }}"
+       class="btn btn-success mt-3">
+        Download Compressed PDF
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

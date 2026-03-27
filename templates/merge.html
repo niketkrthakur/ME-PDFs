@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">Merge PDFs</h2>
+
+<div class="glass-card">
+
+    <form method="POST" enctype="multipart/form-data" id="mergeForm">
+
+        <input type="file"
+               id="fileInput"
+               name="pdf_files"
+               accept=".pdf"
+               multiple
+               class="form-control mb-4"
+               required>
+
+        <!-- Hidden input to store file order -->
+        <input type="hidden" name="file_order" id="fileOrder">
+
+        <ul id="fileList" class="list-group mb-4"></ul>
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Merge Now
+        </button>
+
+    </form>
+
+</div>
+
+<!-- SortableJS -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
+
+fileInput.addEventListener("change", () => {
+    const files = Array.from(fileInput.files);
+    fileList.innerHTML = "";
+
+    files.forEach(file => {
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const typedarray = new Uint8Array(this.result);
+
+            pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                pdf.getPage(1).then(page => {
+
+                    const scale = 0.5;
+                    const viewport = page.getViewport({ scale: scale });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    });
+
+                    const li = document.createElement("li");
+                    li.className = "list-group-item d-flex align-items-center gap-3";
+
+                    li.appendChild(canvas);
+                    li.appendChild(document.createTextNode(file.name));
+
+                    fileList.appendChild(li);
+                });
+            });
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+});
+</script>
+
+{% endblock %}

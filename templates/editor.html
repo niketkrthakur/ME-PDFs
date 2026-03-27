@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-3">Me & PDFs Editor <i class="bi-pencil-square"></i></h2>
+
+<!-- Save Status -->
+<div id="saveStatus" class="mb-3 text-muted">
+    All changes saved
+</div>
+
+<!-- TinyMCE CDN -->
+<script src="https://cdn.tiny.cloud/1/js0tddobke5y5nohh0uou8ifa4x9bbsd1w16q11zlne4lgbd/tinymce/6/tinymce.min.js"></script>
+
+<form method="POST" action="/save/{{ filename }}">
+
+    <input type="text"
+           name="header_text"
+           placeholder="Header text"
+           class="form-control mb-2">
+
+    <input type="text"
+           name="footer_text"
+           placeholder="Footer text"
+           class="form-control mb-2">
+
+    <!-- WATERMARK SETTINGS -->
+    <div class="card p-3 mb-3" style="background:#f8f9fa; border-radius:10px;">
+
+        <div class="form-check form-switch mb-2">
+            <input class="form-check-input"
+                type="checkbox"
+                name="watermark_enabled"
+                id="watermarkToggle">
+
+            <label class="form-check-label ms-2" for="watermarkToggle">
+                Enable Watermark
+            </label>
+        </div>
+
+        <input type="text"
+            name="watermark_text"
+            class="form-control mb-2"
+            placeholder="Watermark Text (e.g., CONFIDENTIAL)">
+
+    </div>
+
+    <textarea id="editor" name="content">
+        {{ content|safe }}
+    </textarea>
+
+    <br><br>
+
+    <button type="submit" class="btn btn-success">
+        Save Document
+    </button>
+
+</form>
+
+<br>
+
+<a href="{{ url_for('download_file', filename=filename) }}" class="btn btn-outline-dark">
+    Download Word
+</a>
+
+<a href="{{ url_for('download_pdf', filename=filename) }}" class="btn btn-primary">
+    Download PDF
+</a>
+
+<script>
+let autosaveTimer;
+let trackMode = false;
+
+function toggleTrack() {
+    trackMode = !trackMode;
+
+    const btn = document.getElementById("trackBtn");
+    if(trackMode){
+        btn.innerText = "Track ON";
+        btn.style.background = "#16a34a";
+    } else {
+        btn.innerText = "Track Changes";
+        btn.style.background = "#e63946";
+    }
+}
+
+tinymce.init({
+    selector: '#editor',
+    height: 700,
+    menubar: true,
+    branding: false,
+
+    plugins: `
+        lists link image table code preview pagebreak
+        advlist autolink wordcount fullscreen
+    `,
+
+    toolbar: `
+        undo redo |
+        blocks fontfamily fontsize |
+        bold italic underline |
+        alignleft aligncenter alignright alignjustify |
+        bullist numlist |
+        table |
+        pagebreak |
+        fullscreen preview
+    `,
+
+    pagebreak_separator: '<!--PAGEBREAK-->',
+
+    content_style: `
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 14pt;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: auto;
+            padding: 60px;
+            background: white;
+        }
+    `,
+
+    setup: function(editor) {
+
+        // 🔥 TRACK CHANGES
+        editor.on('keydown', function(e) {
+            if(trackMode && e.key.length === 1) {
+                editor.insertContent(
+                    '<span style="background:#fffa8b;">' + e.key + '</span>'
+                );
+                e.preventDefault();
+            }
+        });
+
+        // 🔥 AUTOSAVE
+        editor.on('keyup change', function () {
+
+            const statusText = document.getElementById("saveStatus");
+            statusText.innerText = "Saving...";
+            statusText.style.color = "#e63946";
+
+            clearTimeout(autosaveTimer);
+
+            autosaveTimer = setTimeout(() => {
+
+                fetch("/autosave/{{ filename }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "content=" + encodeURIComponent(editor.getContent())
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "saved") {
+                        const now = new Date();
+                        const timeString = now.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute:'2-digit'
+                        });
+
+                        statusText.innerText = "Saved at " + timeString + " ✓";
+                        statusText.style.color = "green";
+                    }
+                });
+
+            }, 1500);
+        });
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">JPG to PDF</h2>
+
+<div class="glass-card text-center">
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="file"
+               name="files"
+               accept=".jpg,.jpeg,.png"
+               multiple
+               required
+               class="form-control mb-4">
+
+        <button type="submit" class="btn btn-primary btn-lg">
+            Convert to PDF
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
